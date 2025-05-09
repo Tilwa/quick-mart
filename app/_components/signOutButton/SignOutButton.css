@@ -1,0 +1,33 @@
+.sign-out-container {
+  /* background-color: aquamarine; */
+  width: 100%;
+  height: 100%;
+}
+
+.sidebar-sign-out-button {
+  background-color: #1b2c36; /* dark background */
+  /* light text color */
+  border: none;
+  text-decoration: none;
+
+  /* background-color: pink; */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  color: #f9fafb;
+  font-weight: 500;
+  font-size: 16px;
+  transition: background 0.2s ease;
+  padding: 0.5rem;
+}
+.sidebar-sign-out-button:hover {
+  background-color: #253b48;
+  border-radius: 8px;
+}
+
+.sidebar-logout-icon {
+  /* background-color: red; */
+}
+.sidebar-logout-txt {
+  /* background-color: blue; */
+}

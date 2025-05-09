@@ -1,0 +1,18 @@
+.navigation .menu {
+  display: flex;
+  gap: 2rem; /* space between items */
+  list-style: none;
+  margin: auto 70px;
+  padding: 10px 0;
+}
+
+.navigation .menu li a {
+  text-decoration: none; /* remove underline */
+  color: #000; /* optional: change text color */
+  font-weight: 500; /* optional: styling */
+  font-size: small;
+}
+
+.navigation .menu li a:hover {
+  color: #0070f3; /* optional: hover effect */
+}

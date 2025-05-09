@@ -1,0 +1,30 @@
+.sign-in-card {
+  display: flex;
+  align-items: center;
+
+  margin-top: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.sign-in-button {
+  background-color: #4286f493;
+  color: black;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sign-in-button:hover {
+  background-color: #4286f4;
+}
+.sign-in-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #4286f4;
+}

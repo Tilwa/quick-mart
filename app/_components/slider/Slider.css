@@ -1,0 +1,60 @@
+.slider {
+  padding: 20px 0;
+}
+.slider-container {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.6);
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0 10px;
+  z-index: 10;
+  color: red;
+}
+
+.left {
+  left: 10px;
+}
+
+.right {
+  right: 10px;
+}
+
+.slider-indicators {
+  position: absolute;
+  bottom: 15px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+}
+
+.indicator {
+  width: 30px;
+  height: 2px;
+  background-color: #ccc;
+  border-bottom: 3px sild red;
+  transition: all 0.3s ease-in-out;
+}
+
+.indicator.active {
+  border-bottom: 3px solid red;
+}

@@ -1,0 +1,33 @@
+.admin-login {
+  display: flex;
+
+  height: 84vh;
+  justify-content: center;
+  align-items: center;
+}
+.admin-card {
+  width: 100%;
+  max-width: 350px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 450px;
+  background-color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.admin-card-icon {
+  font-size: 10rem;
+  flex: 1;
+}
+
+.admin-card-content {
+  /* background-color: violet; */
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+}
