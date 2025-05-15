@@ -1,0 +1,141 @@
+/* Container for the form */
+.add-product-container {
+  margin: auto 70px;
+}
+.path-link {
+  color: #387478;
+  font-size: 16px;
+  margin-top: 10px;
+  color: #629584;
+}
+
+.add-product-form-container {
+  background-color: white;
+  width: 100%;
+  /* margin: 20px auto; */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.add-product-title {
+  color: #387478;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Form styling */
+.add-product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  width: 100%;
+}
+
+/* Form group */
+.add-product-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-product-form-group label {
+  font-size: 14px;
+  font-weight: bold;
+
+  margin-bottom: 2px;
+  color: #629584;
+}
+
+.add-product-form-group input {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  color: #629584;
+  border: 1px solid #e2f1e7;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth effect */
+  margin-bottom: 15px;
+  width: 65%;
+}
+
+/* On focus, change border and shadow color */
+.add-product-form-group input:focus {
+  border-color: #e2f1e7; /* Custom border color on focus */
+  box-shadow: 0 0 5px #e2f1e7; /* Optional shadow effect */
+  outline: none; /* Remove default outline */
+}
+
+/* Add button styling */
+.add-product-button {
+  padding: 8px 12px;
+  font-size: 16px;
+  font-weight: medium;
+  color: #e2f1e7;
+  background-color: #387478;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: max-content;
+  transition: background-color 0.3s ease;
+}
+
+.add-product-button:hover {
+  background-color: #387478e5;
+}
+.cancel-product-button {
+  padding: 8px 12px;
+  font-size: 16px;
+  font-weight: medium;
+  background-color: #cccc;
+  color: #387478;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: max-content;
+  transition: background-color 0.3s ease;
+  margin-right: 10px;
+}
+
+.cancel-product-button:hover {
+  background-color: #ccc;
+}
+
+.asterisk-sign {
+  color: red;
+  font-size: medium;
+}
+.optional-txt {
+  color: #629584;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.add-product-form-group-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: antiquewhite; */
+}
+.add-product-form-group-container-left {
+  /* background-color: cadetblue; */
+  flex: 1;
+  margin-right: 10px;
+}
+
+.add-product-form-group-container-right {
+  /* background-color: rgb(95, 160, 98); */
+  flex: 1;
+  margin-left: 10px;
+}
+.error-message {
+  color: red;
+  font-size: 14px;
+}
+
+.input-and-error-container {
+  display: flex;
+  gap: 10px;
+}

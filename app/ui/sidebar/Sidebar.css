@@ -1,0 +1,99 @@
+.admin-sidebar-container {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1px solid #e2f1e7;
+  background-color: white;
+  box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #243642;
+
+  border-right-color: #e2f1e7;
+}
+#sidebar-logo {
+  width: 125px;
+  height: 125px;
+}
+
+/* Sidebar container */
+.main-sidebar {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 0px 5px;
+  margin-top: 20px;
+  /* background-color: tomato; */
+}
+
+/* Menu styling */
+.sidebar-menu {
+  list-style: none; /* Removes dots */
+  padding: 0;
+  margin: 0;
+}
+
+/* Menu items */
+.sidebar-menu li {
+  margin-bottom: 12px;
+}
+.sidebar-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between icon and text */
+}
+
+/* Links styling */
+.sidebar-menu li a {
+  text-decoration: none; /* Removes underline */
+
+  color: #387478;
+  font-size: 17px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  display: flex; /* Flexbox for aligning icon and text */
+  align-items: center;
+  gap: 10px; /* Space between icon and text */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Icon styling */
+.sidebar-menu-icon {
+  font-size: 18px; /* Adjust icon size */
+  fill: #387478;
+}
+
+/* Hover effect */
+.sidebar-menu li a:hover {
+  background-color: #e2f1e7;
+  color: #387478;
+  font-weight: 500;
+}
+
+.quick-title {
+  border: 1px solid #b7b7b7;
+  padding: 7px 7px;
+  background-color: #387478;
+  color: #e2f1e7;
+  font-weight: bold;
+}
+.mart-title {
+  border: 1px solid #b7b7b7;
+  padding: 5px 5px;
+  background-color: #e2f1e7;
+  color: #387478;
+  font-weight: bold;
+}
+.logo-link {
+  text-decoration: none;
+  color: #387478;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex; /* Flexbox for aligning icon and text */
+  align-items: center;
+  gap: 10px; /* Space between icon and text */
+  margin: 20px;
+}

@@ -1,91 +1,116 @@
-import { auth } from "@/app/_lib/auth";
-import { getUser, updateUser } from "@/app/_lib/actions";
-import { redirect } from "next/navigation";
+"use client";
 
-export default async function UserPage() {
-  const session = await auth();
+import { useState } from "react";
+import "./page.css";
+// import { useForm } from "react-hook-form";
+// import { useUser } from "../../../features/authentication/useUser";
 
-  if (!session?.user?.email) {
-    redirect("/login");
-  }
+export default function AdminSettings() {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const user = await getUser(session.user.email);
+  // This can be used if your `useUser` hook provides user data or loading state
+  // const { user, isLoading } = useUser?.() || {};
 
-  if (!user) {
-    return <p className="text-red-500">User not found.</p>;
-  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!username || !email || !password || !confirmPassword) return;
 
-  async function handleUpdate(formData) {
-    "use server";
-
-    const email = formData.get("email");
-    const name = formData.get("name");
-    const image = formData.get("image");
-
-    if (!email || !name || !image) {
-      return { error: "All fields are required" };
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
     }
 
-    try {
-      const result = await updateUser({ email, name, image });
-      if (result.error) {
-        // Handle error (e.g., show a notification)
-      } else {
-        // Handle success (e.g., show a notification)
-      }
-    } catch (err) {
-      // Handle error (e.g., show a notification)
-    }
-  }
+    // TODO: Implement your update logic here
+    // signup(
+    //   { username, email, password },
+    //   {
+    //     onSettled: () => reset(),
+    //   }
+    // );
+  };
 
   return (
-    <div className="m-6">
-      <h2 className="text-xl font-bold mb-4">Update Profile</h2>
+    <div>
+      <h1 className="settings-title">Settings</h1>
 
-      <form
-        action={handleUpdate}
-        className="mt-6 p-4 border rounded-lg shadow bg-gray-100"
-      >
-        <label className="block mb-2">
-          Email:
-          <input
-            type="text"
-            name="email"
-            defaultValue={user.email}
-            className="w-full p-2 border rounded mt-1 bg-gray-200"
-            disabled
-          />
-        </label>
+      <div className="add-new-word">
+        <div className="form-container">
+          <form onSubmit={handleSubmit} className="form">
+            {/* Full Name */}
+            <div className="form-group">
+              <label htmlFor="fullname">Full Name</label>
+              <input
+                type="text"
+                id="fullname"
+                placeholder="Enter your full name"
+                required
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
 
-        <label className="block mb-2">
-          Full Name:
-          <input
-            type="text"
-            name="name"
-            defaultValue={user.name}
-            className="w-full p-2 border rounded mt-1 bg-white"
-            required
-          />
-        </label>
+            {/* Email */}
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-        <label className="block mb-2">
-          Image URL:
-          <input
-            type="text"
-            name="image"
-            defaultValue={user.image}
-            className="w-full p-2 border rounded mt-1 bg-white"
-            required
-          />
-        </label>
+            {/* Password */}
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                required
+                autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded mt-3"
-        >
-          Update User
-        </button>
-      </form>
+            {/* Confirm Password */}
+            <div className="form-group">
+              <label htmlFor="confirm-password">Repeat Password</label>
+              <input
+                type="password"
+                id="confirm-password"
+                placeholder="Enter your password again"
+                required
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
+
+            {/* Error Message */}
+            {error && <p className="error-text">{error}</p>}
+
+            {/* Action Buttons */}
+            <div className="add-form-btn">
+              <button type="reset" className="cancel-word-button">
+                Cancel
+              </button>
+              <button type="submit" className="add-word-button">
+                Update Account
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

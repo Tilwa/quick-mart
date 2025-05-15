@@ -21,3 +21,20 @@ model User {
   role      String @default("user")  // Default role as 'user'
   createdAt DateTime @default(now())
 }
+model Product {
+  id            Int     @id @default(autoincrement())
+  title         String
+  description   String
+  brand         String?
+  category      String
+  offerPrice    Float
+  originalPrice Float
+  inStock       Int?
+  image1        String
+  image2        String?
+  image3        String?
+  image4        String?
+  image5        String?
+  createdAt     DateTime @default(now())
+}
+

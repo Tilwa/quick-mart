@@ -1,104 +1,180 @@
 "use client";
+import { usePathname } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { useAddProduct } from "@/app/_hooks/product/useAddProduct";
+import "./page.css";
+import Spinner from "@/app/_components/spinner/Spinner";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { createWord } from "@/app/_lib/actions";
+export default function AddProduct() {
+  // Get the current pathname
+  const pathname = usePathname();
+  const formattedPath = pathname.slice(1).split("/").join(" > ");
 
-export default function AddWord() {
-  const router = useRouter();
-  const [word, setWord] = useState("");
-  const [meaning, setMeaning] = useState("");
-  const [difficulty, setDifficulty] = useState("easy");
-  const [loading, setLoading] = useState(false);
+  // Form handling
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-  const handleAdd = async (e) => {
-    e.preventDefault();
-    if (!word || !meaning) {
-      toast.error("Please fill all fields!");
-      return;
-    }
+  // Add product mutation
+  const { mutate: addProduct, isLoading: isCreating } = useAddProduct({
+    onAddProduct: () => reset(),
+  });
 
-    setLoading(true);
+  function onSubmit(data) {
+    addProduct(data);
+  }
 
-    // Call the server action
-    const result = await createWord({ word, meaning, difficulty });
-
-    if (result?.error) {
-      toast.error("Failed to add word!");
-    } else {
-      toast.success("New Word Added");
-      router.push("/dashboard/all-words");
-    }
-
-    setLoading(false);
-  };
+  if (isCreating) return <Spinner />;
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Add New Word</h2>
-      <form
-        onSubmit={handleAdd}
-        className="mt-6 p-4 border rounded-lg shadow bg-gray-100"
-      >
-        <label className="block mb-2">
-          Word:
-          <input
-            type="text"
-            id="word"
-            name="word"
-            className="border p-2 w-full rounded "
-            value={word}
-            onChange={(e) => setWord(e.target.value)}
-            required
-          />
-        </label>
+    <div className="add-product-container">
+      <p className="path-link">{formattedPath}</p>
+      <h1 className="add-product-title">Add New Product</h1>
+      <div className="add-new-product">
+        <div className="add-product-form-container">
+          <form className="add-product-form" onSubmit={handleSubmit(onSubmit)}>
+            <div className="add-product-form-group-container">
+              {/* Left Fields */}
+              <div className="add-product-form-group-container-left">
+                <InputField
+                  label="Title *"
+                  id="title"
+                  register={register}
+                  error={errors.title}
+                  requiredMessage="Title is required ⛔"
+                />
+                <InputField
+                  label="Description *"
+                  id="description"
+                  register={register}
+                  error={errors.description}
+                  requiredMessage="Description is required ⛔"
+                />
+                <InputField
+                  label="Brand (optional)"
+                  id="brand"
+                  register={register}
+                  error={errors.brand}
+                  required={false}
+                />
+                <InputField
+                  label="Category *"
+                  id="category"
+                  register={register}
+                  error={errors.category}
+                  requiredMessage="Category is required ⛔"
+                />
+                <InputField
+                  label="Offer Price *"
+                  id="offerPrice"
+                  type="number"
+                  register={register}
+                  error={errors.offerPrice}
+                  requiredMessage="Offer price is required ⛔"
+                />
+                <InputField
+                  label="Original Price *"
+                  id="originalPrice"
+                  type="number"
+                  register={register}
+                  error={errors.originalPrice}
+                  requiredMessage="Original price is required ⛔"
+                />
+              </div>
 
-        <label className="block mb-2">
-          Meaning:
-          <input
-            type="text"
-            id="meaning"
-            name="meaning"
-            className="border p-2 w-full rounded"
-            value={meaning}
-            onChange={(e) => setMeaning(e.target.value)}
-            required
-          />
-        </label>
+              {/* Right Fields */}
+              <div className="add-product-form-group-container-right">
+                <InputField
+                  label="In Stock (optional)"
+                  id="inStock"
+                  type="number"
+                  register={register}
+                  error={errors.inStock}
+                  required={false}
+                />
+                <InputField
+                  label="Image01 *"
+                  id="image1"
+                  register={register}
+                  error={errors.image1}
+                  requiredMessage="Image1 is required ⛔"
+                />
+                <InputField
+                  label="Image02 (optional)"
+                  id="image2"
+                  register={register}
+                  error={errors.image2}
+                  required={false}
+                />
+                <InputField
+                  label="Image03 (optional)"
+                  id="image3"
+                  register={register}
+                  error={errors.image3}
+                  required={false}
+                />
+                <InputField
+                  label="Image04 (optional)"
+                  id="image4"
+                  register={register}
+                  error={errors.image4}
+                  required={false}
+                />
+                <InputField
+                  label="Image05 (optional)"
+                  id="image5"
+                  register={register}
+                  error={errors.image5}
+                  required={false}
+                />
+              </div>
+            </div>
 
-        <label className="block mb-4">
-          Difficulty:
-          <select
-            className="border p-2 w-full rounded"
-            id="difficulty"
-            name="difficulty"
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value)}
-          >
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-          </select>
-        </label>
-
-        <div className="flex justify-end">
-          <button
-            type="button"
-            className="bg-gray-500 text-white px-3 py-1 rounded mr-2"
-            onClick={() => router.push("/dashboard/all-words")}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="bg-orange-500 text-white px-3 py-1 rounded"
-            disabled={loading}
-          >
-            {loading ? "Adding..." : "Add Word"}
-          </button>
+            {/* Buttons */}
+            <div className="add-form-btn">
+              <button type="reset" className="cancel-product-button">
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="add-product-button"
+                disabled={isCreating}
+              >
+                Add product
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
+    </div>
+  );
+}
+
+// Reusable input component
+function InputField({
+  label,
+  id,
+  type = "text",
+  register,
+  error,
+  required = true,
+  requiredMessage,
+}) {
+  return (
+    <div className="add-product-form-group">
+      <label>{label}</label>
+      <div className="input-and-error-container">
+        <input
+          type={type}
+          id={id}
+          placeholder={`Enter your ${id}`}
+          {...register(id, required ? { required: requiredMessage } : {})}
+        />
+        {error && <p className="error-message">{error.message}</p>}
+      </div>
     </div>
   );
 }

@@ -1,36 +1,22 @@
-.layout-container {
+.admin-app-layout {
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: row;
 }
 
-.sidebar-navigation {
-  background-color: #1b2c36;
+.admin-sidebar {
   flex: 1;
+}
+
+.admin-header-outlet {
+  background-color: #f9fafb;
+  flex: 5;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
 }
-.db-logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-}
-.dasboard-view-container {
-  flex: 6;
-}
-
-.quick-title {
-  border: 1px solid #b7b7b7;
-  padding: 7px 7px;
-  background-color: red;
-  color: white;
-  font-weight: bold;
-}
-.mart-title {
-  border: 1px solid #b7b7b7;
-  padding: 5px 5px;
-  background-color: white;
-  color: red;
-  font-weight: bold;
+#main-content-container {
+  height: 100%;
 }

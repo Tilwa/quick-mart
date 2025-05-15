@@ -1,0 +1,65 @@
+/* Container for the form */
+.form-container {
+  background-color: #f9f9f9;
+  width: 80%;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.settings-title {
+  margin: 50px;
+  color: #387478;
+}
+
+/* Form styling */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  width: 100%;
+}
+
+/* Form group */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #387478;
+}
+
+.form-group input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: #387478;
+}
+
+/* Add button styling */
+.add-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #e2f1e7;
+  background-color: #387478;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: max-content;
+  transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+  background-color: #629584;
+}

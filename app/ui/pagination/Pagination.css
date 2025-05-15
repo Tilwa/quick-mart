@@ -1,0 +1,36 @@
+.table-pagination {
+  background-color: #f1f1f1;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: small;
+  display: flex;
+  align-items: center;
+}
+.footer-btns-container {
+  display: flex;
+}
+.footer-btns {
+  margin-left: 10px;
+  padding: 4px;
+  border: none;
+  color: #243642;
+  background-color: #dddd;
+  border-radius: 3px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth effect */
+  display: flex;
+  align-items: center;
+}
+/* On focus, change border and shadow color */
+.footer-btns:hover {
+  border-color: #ccc; /* Custom border color on focus */
+  box-shadow: 0 0 5px #ccc; /* Optional shadow effect */
+  outline: none; /* Remove default outline */
+}
+
+.footer-txt {
+  color: #243642;
+}
+.footer-txt-bold {
+  color: #387478;
+}

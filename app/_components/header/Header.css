@@ -9,18 +9,18 @@
   margin: auto 70px;
   padding: 15px 0;
 }
-#quick-title {
+.quick-title {
   border: 1px solid #b7b7b7;
   padding: 7px 7px;
-  background-color: red;
-  color: white;
+  background-color: #387478;
+  color: #e2f1e7;
   font-weight: bold;
 }
-#mart-title {
+.mart-title {
   border: 1px solid #b7b7b7;
   padding: 5px 5px;
-  background-color: white;
-  color: red;
+  background-color: #e2f1e7;
+  color: #387478;
   font-weight: bold;
 }
 
@@ -48,19 +48,22 @@
   border: 1px solid rgb(213, 212, 212);
 }
 .search-input:hover {
-  border: 1px solid red;
+  border: 1px solid #387478;
 }
 
 .search-input:focus {
-  border: 1px solid red; /* Keeps it pink even when clicked */
+  border: 1px solid #387478; /* Keeps it pink even when clicked */
   outline: none; /* Optional, hides the glow/outline */
 }
 #search-btn {
-  background-color: red;
+  background-color: #387478;
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
   color: white;
   font-weight: bold;
+}
+#search-btn:hover {
+  background-color: #387478;
 }

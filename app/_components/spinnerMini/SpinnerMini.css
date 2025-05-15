@@ -1,0 +1,18 @@
+/* SpinnerMini.css */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner-icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  animation: rotate 1.5s infinite linear;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}

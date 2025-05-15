@@ -6,8 +6,8 @@ function Header() {
     <header className="header">
       <div className="header-content">
         <div>
-          <span id="quick-title">Quick</span>
-          <span id="mart-title">Mart</span>
+          <span className="quick-title">Quick</span>
+          <span className="mart-title">Mart</span>
         </div>
         <div className="search-bar">
           <input type="text" placeholder="Search..." className="search-input" />
