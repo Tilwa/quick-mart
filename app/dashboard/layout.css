@@ -10,7 +10,7 @@
 }
 
 .admin-header-outlet {
-  background-color: #f9fafb;
+  background-color: #f0f0f0;
   flex: 5;
   height: 100vh;
   display: flex;
@@ -19,4 +19,5 @@
 }
 #main-content-container {
   height: 100%;
+  /* background-color: aquamarine; */
 }

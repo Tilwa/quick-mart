@@ -5,7 +5,6 @@ const SpinnerMini = () => {
   return (
     <div className="spinner-container">
       <BiLoaderAlt className="spinner-icon" />
-      <h1>Hellllo</h1>
     </div>
   );
 };
