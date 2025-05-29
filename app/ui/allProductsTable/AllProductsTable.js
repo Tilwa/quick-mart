@@ -2,22 +2,24 @@
 
 import { useQuery } from "@tanstack/react-query";
 import "./AllProductsTable.css";
-import { getProducts } from "@/app/_hooks/product/useFetchProduct";
+import { getAllProducts } from "@/app/_hooks/product/useGetAllProducts";
 import SpinnerMini from "@/app/_components/spinnerMini/SpinnerMini";
 import TableRow from "./TableRow";
+import { useState } from "react";
 
 function AllProductsTable() {
+  const [activeProductId, setActiveProductId] = useState(null);
   const {
     isLoading,
     data: products,
     error,
   } = useQuery({
     queryKey: ["product"],
-    queryFn: getProducts,
+    queryFn: getAllProducts,
     staleTime: 0,
   });
 
-  console.log(products);
+  // console.log(products);
 
   if (isLoading) return <SpinnerMini />;
   return (
@@ -45,9 +47,22 @@ function AllProductsTable() {
           </tr>
         </thead>
         <tbody>
-          {products?.products?.map((product) => (
-            <TableRow product={product} key={product.id} />
-          ))}
+          {products.count.length === 0 ? (
+            <tr id="no-result-found-row">
+              <td id="no-result-found-txt" colSpan="15">
+                No results found.
+              </td>
+            </tr>
+          ) : (
+            products?.count?.map((product) => (
+              <TableRow
+                product={product}
+                key={product.id}
+                activeProductId={activeProductId}
+                setActiveProductId={setActiveProductId}
+              />
+            ))
+          )}
         </tbody>
       </table>
     </div>

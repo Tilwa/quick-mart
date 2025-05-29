@@ -11,18 +11,104 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: grid;
 
-  grid-template-rows: 0.99fr 4fr 0.4fr;
+  grid-template-rows: 0.8fr 4fr 0.3fr;
   grid-template-columns: 1fr;
 }
 
 .all-products-top {
-  background-color: rgb(186, 245, 179);
+  /* background-color: rgb(186, 245, 179); */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 10px 10px 0px 10px;
+}
+.edit-product-path {
+  /* background-color: rgb(27, 15, 75); */
+  flex: 2;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: small;
+  color: #387478;
+}
+.edit-product-title {
+  /* background-color: rgb(40, 246, 226); */
+  flex: 3;
+  font-size: xx-large;
+  font-weight: bolder;
+  color: #243642;
+}
+.all-products-top-middle {
+  background-color: rgb(40, 246, 226);
+  flex: 3;
+  font-size: xx-large;
+  font-weight: bolder;
+  color: #243642;
 }
 
-.all-products-middle {
-  /* background-color: rgb(180, 179, 245); */
+.all-products-top-bottom {
+  /* background-color: rgb(104, 102, 7); */
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
 }
 
+#all-products-search {
+  width: 350px;
+  padding: 7px;
+  border-radius: 5px;
+
+  color: #387478;
+  font-size: small;
+
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2f1e7;
+  outline: none;
+  margin-right: 20px;
+}
+
+#all-products-view {
+  width: 60px;
+  padding: 6px;
+  border-radius: 3px;
+  color: #243642;
+  font-size: small;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2f1e7;
+  outline: none;
+  color: #387478;
+}
+.all-products-status-filter {
+  width: 60px;
+  padding: 6px;
+  border-radius: 3px;
+  color: #387478;
+  font-size: small;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2f1e7;
+  outline: none;
+  margin-right: 5px;
+}
 .all-products-bottom {
-  background-color: rgb(245, 187, 179);
+  background-color: #e2f1e7;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#all-products-rows {
+  font-size: small;
+  color: #243642;
+  margin-left: 10px;
+}
+.all-products-pages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 100px;
+  font-size: small;
+  color: #243642;
+  margin-right: 10px;
 }

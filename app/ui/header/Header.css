@@ -1,6 +1,6 @@
 .admin-header {
   background-color: white;
-  height: 60px;
+  min-height: 52px;
   border-bottom: 1px solid #e2f1e7;
   display: flex;
   width: 100%;

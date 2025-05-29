@@ -1,31 +1,35 @@
-"use client";
+// export async function deleteProduct(id) {
+//   try {
+//     const res = await fetch("/api/products", {
+//       method: "DELETE",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ id }),
+//     });
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+//     if (!res.ok) {
+//       throw new Error("Failed to delete product");
+//     }
+//     return await res.json();
+//   } catch (error) {
+//     console.error("Error deleting product:", error);
+//     throw error;
+//   }
+// }
+export async function deleteProduct(id) {
+  try {
+    const res = await fetch(`/api/products/${id}`, {
+      method: "DELETE",
+    });
 
-export const useDeleteProduct = () => {
-  const queryClient = useQueryClient();
+    if (!res.ok) {
+      throw new Error("Failed to delete product");
+    }
 
-  const mutation = useMutation({
-    mutationFn: async (id) => {
-      const res = await fetch("/api/products", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to delete product");
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["products"]);
-    },
-  });
-
-  return {
-    deleteProduct: mutation.mutate,
-    isDeleting: mutation.isPending,
-  };
-};
+    return await res.json();
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
+}

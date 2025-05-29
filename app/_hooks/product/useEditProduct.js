@@ -1,31 +1,16 @@
-"use client";
-
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-export const useEditProduct = () => {
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: async ({ editProductData }) => {
-      const res = await fetch("/api/products", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editProductData),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to update product");
-      }
+export async function editUpdateProduct({ productData, productId }) {
+  const res = await fetch(`/api/products/${productId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["products"]);
-    },
+    body: JSON.stringify(productData),
   });
 
-  return {
-    editProduct: mutation.mutate,
-    isEditing: mutation.isPending,
-  };
-};
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to update product");
+  }
+
+  return res.json();
+}

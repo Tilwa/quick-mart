@@ -35,20 +35,19 @@ export async function POST(request) {
 // **************************************ADD PRODUCT CODE ENDS********************************************* //
 
 // **************************************GET ALL PRODUCTS CODE STARTS********************************************* //
-import { NextRequest } from "next/server";
 
 export async function GET(req = NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
-    const pageSize = 10;
+    const pageSize = 12;
 
     const [products, count] = await Promise.all([
+      prisma.product.count(),
       prisma.product.findMany({
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
-      prisma.product.count(),
     ]);
 
     return NextResponse.json({ products, count });
@@ -61,26 +60,3 @@ export async function GET(req = NextRequest) {
 }
 
 // **************************************GET ALL PRODUCTS CODE ENDS********************************************* //
-
-// **************************************EDIT PRODUCT CODE STARTS********************************************* //
-export async function PUT(req) {
-  const data = await req.json();
-  const updatedProduct = await prisma.product.update({
-    where: { id: data.id },
-    data: {
-      name: data.name,
-      description: data.description,
-      label: data.label,
-    },
-  });
-  return NextResponse.json(updatedProduct);
-}
-// **************************************EDIT PRODUCT CODE ENDS********************************************* //
-
-// **************************************DELETE PRODUCT CODE STARTS********************************************* //
-export async function DELETE(req) {
-  const { id } = await req.json();
-  await prisma.product.delete({ where: { id } });
-  return NextResponse.json({ success: true });
-}
-// **************************************DELETE PRODUCT CODE ENDS********************************************* //

@@ -1,39 +1,90 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+
 import { useForm } from "react-hook-form";
-
-import "./page.css";
 import Spinner from "@/app/_components/spinner/Spinner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { addProduct } from "@/app/_hooks/product/useAddProduct";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import "./page.css";
+import { editUpdateProduct } from "@/app/_hooks/product/useEditProduct";
+import { getProductById } from "@/app/_hooks/product/useGetProductById";
 
-export default function AddProduct() {
+function Page() {
   const router = useRouter();
 
-  // Get the current pathname
+  // getting productId and path link
   const pathname = usePathname();
+  const productId = Number(pathname.split("/").pop());
   const formattedPath = pathname.slice(1).split("/").join(" > ");
 
-  // Form handling
+  // getting productById from prisma
+  function useProduct(productId) {
+    return useQuery({
+      queryKey: ["product", productId],
+      queryFn: () => getProductById(productId),
+      enabled: !!productId,
+    });
+  }
+
+  const { data: product, isLoading: isFetching, error } = useProduct(productId);
+  // console.log(product);
+
+  // old way to use product content from reactQuery temporary
+  // const queryClient = useQueryClient();
+  // const products = queryClient.getQueryData(["product"]);
+  // const product = products?.count?.find((p) => p.id === productId);
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+      brand: "",
+      category: "",
+      offerPrice: "",
+      originalPrice: "",
+      inStock: "",
+      image1: "",
+      image2: "",
+      image3: "",
+      image4: "",
+      image5: "",
+      id: "",
+    },
+  });
 
-  // Add product mutation
-
-  const queryClient = useQueryClient();
-  const { isLoading: isCreating, mutate } = useMutation({
-    mutationFn: addProduct,
-    onSuccess: () => {
-      toast.success("Product added successfully!");
-      queryClient.invalidateQueries({
-        queryKey: ["product"],
+  useEffect(() => {
+    if (product) {
+      reset({
+        title: product.title || "",
+        description: product.description || "",
+        brand: product.brand || "",
+        category: product.category || "",
+        offerPrice: product.offerPrice || "",
+        originalPrice: product.originalPrice || "",
+        inStock: product.inStock || "",
+        image1: product.image1 || "",
+        image2: product.image2 || "",
+        image3: product.image3 || "",
+        image4: product.image4 || "",
+        image5: product.image5 || "",
+        id: product.id || "",
       });
+    }
+  }, [product, reset]);
 
+  //updating productData to the database
+  const queryClient = useQueryClient();
+  const { isLoading: isUpdating, mutate } = useMutation({
+    mutationFn: editUpdateProduct,
+    onSuccess: () => {
+      toast.success("Product updated successfully!");
+      queryClient.invalidateQueries(["product", productId]);
       reset();
 
       router.push("/dashboard/all-products");
@@ -44,10 +95,15 @@ export default function AddProduct() {
   });
 
   function onSubmit(data) {
-    mutate(data);
+    mutate({ productData: data, productId });
   }
 
-  if (isCreating) return <Spinner />;
+  // checking conditions
+  if (!productId) return <div>Product ID not found</div>;
+  // if (!product)
+  //   return <div>Products not found in cache. Go back and retry.</div>;
+  if (isFetching || isUpdating) return <Spinner />;
+
   return (
     <div className="edit-product-container">
       <div className="edit-product-card">
@@ -55,7 +111,7 @@ export default function AddProduct() {
           <div className="edit-product-path">
             <p>{formattedPath}</p>
           </div>
-          <div className="edit-product-title">Add Product</div>
+          <div className="edit-product-title">Edit Product</div>
         </div>
 
         <div className="edit-product-middle">
@@ -168,9 +224,9 @@ export default function AddProduct() {
               <button
                 type="submit"
                 className="add-product-button"
-                disabled={isCreating}
+                disabled={isUpdating}
               >
-                Add product
+                Update product
               </button>
             </div>
           </form>
@@ -180,6 +236,8 @@ export default function AddProduct() {
     </div>
   );
 }
+
+export default Page;
 
 // Reusable input field
 function InputField({
