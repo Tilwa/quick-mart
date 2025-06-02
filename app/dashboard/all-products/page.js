@@ -10,26 +10,19 @@ import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import SpinnerMini from "@/app/_components/spinnerMini/SpinnerMini";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllProducts } from "@/app/_hooks/product/useGetAllProducts";
 import { useRef, useState } from "react";
 import { deleteMultipleRows } from "@/app/_hooks/product/useDeleteProduct";
 import toast from "react-hot-toast";
-import { useDebounce } from "@/app/utils/useDebounce";
-import { usePersistedState } from "@/app/utils/usePersistedState";
 
 function Page() {
-  const [searchTerm, setSearchTerm] = usePersistedState("search-products", "");
+  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState("");
   const [deleteTenRows, setDeleteTenRows] = useState(true);
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeViewMenu, setActiveViewMenu] = useState(false);
-  const debouncedSearch = useDebounce(searchTerm, 400);
-
-  // re-focus search input
-  const searchInputRef = useRef(null);
 
   // Get the current pathname
   const pathname = usePathname();
@@ -38,18 +31,11 @@ function Page() {
   // fetching all products initially
   const {
     isLoading,
-    data: products = { products: [], count: 0 }, // default fallback
+    data: products,
     error,
   } = useQuery({
-    queryKey: ["products", page, debouncedSearch, sortBy],
-    queryFn: () => {
-      if (debouncedSearch.length >= 3 || debouncedSearch.length === 0) {
-        return getAllProducts({ page, search: debouncedSearch, sortBy });
-      }
-      // Otherwise return same fallback to avoid flicker
-      return Promise.resolve({ products: [], count: 0 });
-    },
-    keepPreviousData: true,
+    queryKey: ["products", page, searchTerm, sortBy],
+    queryFn: () => getAllProducts({ page, search: searchTerm, sortBy }),
   });
 
   // toggle when menu button clicked
@@ -88,6 +74,7 @@ function Page() {
     }
   }
 
+  // if (isLoading) return <SpinnerMini />;
   return (
     <div className="all-products-container">
       <div className="all-products-card">
@@ -100,12 +87,18 @@ function Page() {
             <div>
               {/* search products bar */}
               <input
-                ref={searchInputRef}
                 type="text"
                 id="all-products-search"
                 placeholder="Search products here..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSearchTerm(value);
+                  setPage(1); // ✅ always reset page on new search
+
+                  // Optional: Debounce or delay firing query unless search is meaningful
+                  if (value.length < 3 && value.length !== 0) return;
+                }}
                 onFocus={(e) => e.target.select()}
               />
 
@@ -169,7 +162,7 @@ function Page() {
         <div className="all-products-bottom">
           <p id="all-products-rows">
             {" "}
-            {selectedRows.length} of {products.count} row(s) selected.
+            {selectedRows.length} of {products?.count} row(s) selected.
           </p>
 
           <div className="all-products-pages">
