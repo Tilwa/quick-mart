@@ -36,22 +36,55 @@ export async function POST(request) {
 
 // **************************************GET ALL PRODUCTS CODE STARTS********************************************* //
 
-export async function GET(req = NextRequest) {
+export async function GET(req = request) {
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
-    const pageSize = 12;
+    const pageSize = 10;
 
-    const [products, count] = await Promise.all([
-      prisma.product.count(),
-      prisma.product.findMany({
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-      }),
+    const search = searchParams.get("search") || "";
+    const sortBy = searchParams.get("sortBy") || "";
+
+    const whereClause = search
+      ? {
+          OR: [
+            { title: { contains: search, mode: "insensitive" } },
+            { brand: { contains: search, mode: "insensitive" } },
+            { category: { contains: search, mode: "insensitive" } },
+          ],
+        }
+      : {};
+
+    let orderByClause = null;
+
+    if (sortBy === "price-asc") {
+      orderByClause = { originalPrice: "asc" };
+    } else if (sortBy === "price-desc") {
+      orderByClause = { originalPrice: "desc" };
+    } else if (sortBy === "title-asc") {
+      orderByClause = { title: "asc" };
+    } else if (sortBy === "title-desc") {
+      orderByClause = { title: "desc" };
+    }
+
+    const queryOptions = {
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      where: whereClause,
+    };
+
+    if (orderByClause) {
+      queryOptions.orderBy = orderByClause;
+    }
+
+    const [count, products] = await Promise.all([
+      prisma.product.count({ where: whereClause }),
+      prisma.product.findMany(queryOptions),
     ]);
 
     return NextResponse.json({ products, count });
   } catch (error) {
+    console.error("API error:", error);
     return NextResponse.json(
       { error: "Failed to fetch products" },
       { status: 500 }

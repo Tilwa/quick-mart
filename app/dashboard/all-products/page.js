@@ -4,10 +4,90 @@ import { usePathname } from "next/navigation";
 import AllProductsTable from "@/app/ui/allProductsTable/AllProductsTable";
 import "./page.css";
 
+import { FaSortAlphaDown } from "react-icons/fa";
+import { FaSortAlphaDownAlt } from "react-icons/fa";
+import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
+import { MdKeyboardDoubleArrowRight } from "react-icons/md";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { MdKeyboardArrowRight } from "react-icons/md";
+import SpinnerMini from "@/app/_components/spinnerMini/SpinnerMini";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAllProducts } from "@/app/_hooks/product/useGetAllProducts";
+import { useRef, useState } from "react";
+import { deleteMultipleRows } from "@/app/_hooks/product/useDeleteProduct";
+import toast from "react-hot-toast";
+import { useDebounce } from "@/app/utils/useDebounce";
+import { usePersistedState } from "@/app/utils/usePersistedState";
+
 function Page() {
+  const [searchTerm, setSearchTerm] = usePersistedState("search-products", "");
+  const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState("");
+  const [deleteTenRows, setDeleteTenRows] = useState(true);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [activeViewMenu, setActiveViewMenu] = useState(false);
+  const debouncedSearch = useDebounce(searchTerm, 400);
+
+  // re-focus search input
+  const searchInputRef = useRef(null);
+
   // Get the current pathname
   const pathname = usePathname();
   const formattedPath = pathname.slice(1).split("/").join(" > ");
+
+  // fetching all products initially
+  const {
+    isLoading,
+    data: products = { products: [], count: 0 }, // default fallback
+    error,
+  } = useQuery({
+    queryKey: ["products", page, debouncedSearch, sortBy],
+    queryFn: () => {
+      if (debouncedSearch.length >= 3 || debouncedSearch.length === 0) {
+        return getAllProducts({ page, search: debouncedSearch, sortBy });
+      }
+      // Otherwise return same fallback to avoid flicker
+      return Promise.resolve({ products: [], count: 0 });
+    },
+    keepPreviousData: true,
+  });
+
+  // toggle when menu button clicked
+  const menuRef = useRef(null);
+  const toggleMenu = () => {
+    setActiveViewMenu((prev) => !prev);
+  };
+
+  // counting total pages
+  const totalPages = Math.ceil(products?.count / 10);
+
+  // using queryClient for trigger refetch products
+  const queryClient = useQueryClient();
+
+  // deleting multiple rows
+  async function handleDeleteMultipleRows(e) {
+    e.preventDefault();
+    if (selectedRows.length === 0) {
+      alert("Please select at least one row to delete.");
+      return;
+    }
+    const confirmDelete = window.confirm(
+      "Do you want to delete selected products?"
+    );
+    if (!confirmDelete) return;
+    const success = await deleteMultipleRows(selectedRows); // pass selectedRows here
+    // ✅ Trigger refetch of products
+    queryClient.invalidateQueries({
+      queryKey: ["products"],
+    });
+    if (success) {
+      toast.success(`Product(s) deleted successfully!`);
+      setSelectedRows([]); // Clear selection
+    } else {
+      toast.error(`❌ Failed: ${error.message}`);
+    }
+  }
+
   return (
     <div className="all-products-container">
       <div className="all-products-card">
@@ -18,29 +98,102 @@ function Page() {
           <div className="edit-product-title">All Products</div>
           <div className="all-products-top-bottom">
             <div>
+              {/* search products bar */}
               <input
+                ref={searchInputRef}
                 type="text"
                 id="all-products-search"
                 placeholder="Search products here..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={(e) => e.target.select()}
               />
-              <button className="all-products-status-filter">Status</button>
-              <button className="all-products-status-filter">Filter</button>
+
+              {!selectedRows.length > 0
+                ? ""
+                : selectedRows.length > 0 && (
+                    <button
+                      className="all-products-status-filter"
+                      onClick={handleDeleteMultipleRows}
+                    >
+                      Delete{" "}
+                      {selectedRows.length > 0 ? selectedRows.length : 10}{" "}
+                      row(s)
+                    </button>
+                  )}
             </div>
 
-            <button id="all-products-view">View</button>
+            {/* toggle view button */}
+            <div className="view-menu-wrapper" ref={menuRef}>
+              <button id="all-products-view" onClick={toggleMenu}>
+                View By
+              </button>
+
+              {activeViewMenu && (
+                <div id="view-by-menus">
+                  <ul id="view-by-menu-list">
+                    <li onClick={() => setSortBy("price-asc")}>
+                      Price Low to High ⬆️
+                    </li>
+                    <li onClick={() => setSortBy("price-desc")}>
+                      Price High to Low ⬇️
+                    </li>
+                    <li onClick={() => setSortBy("title-asc")}>
+                      Ascending Order{" "}
+                      <FaSortAlphaDown
+                        className="view-by-icons"
+                        id="view-by-icons-asc"
+                      />
+                    </li>
+                    <li onClick={() => setSortBy("title-desc")}>
+                      Descending Order{" "}
+                      <FaSortAlphaDownAlt className="view-by-icons" />
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="all-products-middle">
-          <AllProductsTable />
+          <AllProductsTable
+            isLoading={isLoading}
+            products={products}
+            deleteTenRows={deleteTenRows}
+            setDeleteTenRows={setDeleteTenRows}
+            selectedRows={selectedRows}
+            setSelectedRows={setSelectedRows}
+          />
         </div>
 
         <div className="all-products-bottom">
-          <p id="all-products-rows">0 of 100 row(s) selected.</p>
+          <p id="all-products-rows">
+            {" "}
+            {selectedRows.length} of {products.count} row(s) selected.
+          </p>
 
           <div className="all-products-pages">
             <p>Rows per page 10</p>
-            <p>Page 1 of 10</p>
-            <div>p p p p </div>
+            <p>
+              Page {page} of {totalPages}
+            </p>
+            <div className="forward-back-btns">
+              <MdKeyboardDoubleArrowLeft onClick={() => setPage(1)} />
+              <MdKeyboardArrowLeft
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              />
+              <MdKeyboardArrowRight
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: page === totalPages ? "not-allowed" : "pointer",
+                  opacity: page === totalPages ? 0.4 : 1,
+                }}
+              />
+              <MdKeyboardDoubleArrowRight onClick={() => setPage(totalPages)} />
+            </div>
           </div>
         </div>
       </div>

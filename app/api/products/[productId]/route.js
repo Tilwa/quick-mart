@@ -56,12 +56,21 @@ export async function PATCH(request, { params }) {
 
 // **************************************EDIT PRODUCT CODE ENDS********************************************* //
 
-// **************************************DELETE PRODUCT CODE STARTS********************************************* //
+// **************************************DELETE PRODUCT BY ID CODE STARTS********************************************* //
 
 export async function DELETE(request, { params }) {
-  const id = parseInt(params.productId);
+  const { productId } = params;
 
+  if (!params?.productId || isNaN(parseInt(params.productId, 10))) {
+    return NextResponse.json(
+      { message: "Invalid product ID" },
+      { status: 400 }
+    );
+  }
+
+  const id = parseInt(productId, 10);
   if (isNaN(id)) {
+    // Avoid logging this unless you need it
     return NextResponse.json(
       { message: "Invalid product ID" },
       { status: 400 }
@@ -75,15 +84,19 @@ export async function DELETE(request, { params }) {
 
     return NextResponse.json(deletedProduct, { status: 200 });
   } catch (error) {
-    console.error("Error deleting product:", error);
+    // Optional: Only log detailed errors in development
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error deleting product:", error);
+    }
+
     return NextResponse.json(
-      { message: "Failed to delete product", error: error.message },
+      { message: "Failed to delete product" },
       { status: 500 }
     );
   }
 }
 
-// **************************************DELETE PRODUCT CODE ENDS********************************************* //
+// **************************************DELETE PRODUCT BY ID CODE ENDS********************************************* //
 
 // **************************************GET PRODUCT BY ID CODE STARTS********************************************* //
 
@@ -120,3 +133,29 @@ export async function GET(request, context) {
 }
 
 // **************************************GET PRODUCT BY ID CODE ENDS********************************************* //
+
+// **************************************DELETE MULTIPLE PRODUCTS CODE STARTS********************************************* //
+
+export async function POST(req) {
+  try {
+    const { ids } = await req.json();
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return NextResponse.json({ message: "No IDs provided" }, { status: 400 });
+    }
+
+    await prisma.product.deleteMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+
+    return NextResponse.json({ message: "Deleted successfully" });
+  } catch (error) {
+    console.error("Delete error:", error);
+    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+  }
+}
+
+// **************************************DELETE MULTIPLE PRODUCTS CODE ENDS********************************************* //

@@ -9,7 +9,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteProduct } from "@/app/_hooks/product/useDeleteProduct";
 import toast from "react-hot-toast";
 
-function TableRow({ product, activeProductId, setActiveProductId }) {
+function TableRow({
+  product,
+  activeProductId,
+  setActiveProductId,
+  isSelected,
+  onSelect,
+}) {
   const {
     id: productId,
     title,
@@ -60,10 +66,25 @@ function TableRow({ product, activeProductId, setActiveProductId }) {
     return `https://drive.google.com/uc?export=view&id=${match[1]}`;
   }
 
+  function handleDeleteProduct(productId) {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      mutate(productId, {
+        onSuccess: () => {
+          // ✅ Trigger refetch of products
+          queryClient.invalidateQueries({ queryKey: ["products"] });
+        },
+        onError: (err) => {
+          console.error("Deletion failed:", err);
+          alert("Failed to delete product.");
+        },
+      });
+    }
+  }
+
   return (
     <tr className="all-products-table-row">
       <td className="all-products-table-data">
-        <input type="checkbox" />
+        <input type="checkbox" checked={isSelected} onChange={onSelect} />
       </td>
       <td className="all-products-table-data">{productId}</td>
       <td className="all-products-table-data">{title}</td>
@@ -101,15 +122,7 @@ function TableRow({ product, activeProductId, setActiveProductId }) {
               </Link>
 
               <li
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Are you sure you want to delete this product?"
-                    )
-                  ) {
-                    mutate(productId);
-                  }
-                }}
+                onClick={() => handleDeleteProduct(productId)}
                 disabled={isDeleting}
               >
                 Delete
