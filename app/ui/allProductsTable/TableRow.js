@@ -33,11 +33,7 @@ function TableRow({
   } = product;
 
   // Convert Google Drive view links to direct image links
-  const img1 = getDriveDirectLink(image1);
-  const img2 = getDriveDirectLink(image2);
-  const img3 = getDriveDirectLink(image3);
-  const img4 = getDriveDirectLink(image4);
-  const img5 = getDriveDirectLink(image5);
+
   const toggleMenu = () => {
     if (activeProductId === productId) {
       setActiveProductId(null);
@@ -60,14 +56,12 @@ function TableRow({
     },
   });
 
-  function getDriveDirectLink(url) {
-    const match = url.match(/\/d\/(.*?)\//);
-    if (!match || !match[1]) return url; // fallback to original if not matching
-    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
-  }
-
   function handleDeleteProduct(productId) {
-    if (window.confirm("Are you sure you want to delete this product?")) {
+    let confirmDelete;
+    if (typeof window !== "undefined") {
+      confirmDelete = window.confirm("Do you want to delete selected product?");
+    }
+    if (confirmDelete) {
       mutate(productId, {
         onSuccess: () => {
           // ✅ Trigger refetch of products
@@ -95,19 +89,19 @@ function TableRow({
       <td className="all-products-table-data">{originalPrice}</td>
       <td className="all-products-table-data">{inStock}</td>
       <td className="all-products-table-data">
-        <Image src={img1} alt="image1" width={21} height={21} />
+        {image1 && <Image src={image1} alt="image1" width={21} height={21} />}
       </td>
       <td className="all-products-table-data">
-        <Image src={img2} alt="image1" width={21} height={21} />
+        {image2 && <Image src={image2} alt="image2" width={21} height={21} />}
       </td>
       <td className="all-products-table-data">
-        <Image src={img3} alt="image1" width={21} height={21} />
+        {image3 && <Image src={image3} alt="image3" width={21} height={21} />}
       </td>
       <td className="all-products-table-data">
-        <Image src={img4} alt="image1" width={21} height={21} />
+        {image4 && <Image src={image4} alt="image4" width={21} height={21} />}
       </td>
       <td className="all-products-table-data">
-        <Image src={img5} alt="image1" width={21} height={21} />
+        {image5 && <Image src={image5} alt="image5" width={21} height={21} />}
       </td>
       <td className="all-products-table-data edit-delete-actions">
         <HiDotsHorizontal onClick={toggleMenu} id="edit-del-icon" />

@@ -1,8 +1,8 @@
 import SignInButton from "@/app/_components/signInbutton/SignInButton";
 import { FaUserCircle } from "react-icons/fa";
-export const metadata = {
-  title: "Login",
-};
+// export const metadata = {
+//   title: "Login",
+// };
 
 import "./page.css";
 import Header from "../_components/header/Header";

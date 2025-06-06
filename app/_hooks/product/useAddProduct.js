@@ -1,3 +1,4 @@
+"use server";
 export async function addProduct(productData) {
   try {
     const res = await fetch("/api/products", {

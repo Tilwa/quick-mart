@@ -1,3 +1,4 @@
+"use server";
 export async function editUpdateProduct({ productData, productId }) {
   const res = await fetch(`/api/products/${productId}`, {
     method: "PATCH",

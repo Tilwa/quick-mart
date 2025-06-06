@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import "./page.css";
 import { editUpdateProduct } from "@/app/_hooks/product/useEditProduct";
 import { getProductById } from "@/app/_hooks/product/useGetProductById";
+import getDriveDirectLink from "@/app/utils/getDriveDirectLink";
 
 function Page() {
   const router = useRouter();
@@ -95,7 +96,17 @@ function Page() {
   });
 
   function onSubmit(data) {
-    mutate({ productData: data, productId });
+    // Convert drive links before submitting to DB
+    const updatedData = {
+      ...data,
+      image1: getDriveDirectLink(data.image1),
+      image2: getDriveDirectLink(data.image2),
+      image3: getDriveDirectLink(data.image3),
+      image4: getDriveDirectLink(data.image4),
+      image5: getDriveDirectLink(data.image5),
+    };
+
+    mutate({ productData: updatedData, productId });
   }
 
   // checking conditions

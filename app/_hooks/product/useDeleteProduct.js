@@ -1,3 +1,5 @@
+"use server";
+
 // **************************************DELETE PRODUCT BY ID CODE STARTS********************************************* //
 
 export async function deleteProduct(id) {

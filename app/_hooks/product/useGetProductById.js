@@ -1,3 +1,4 @@
+"use server";
 export async function getProductById(productId) {
   try {
     const res = await fetch(`/api/products/${productId}`, {

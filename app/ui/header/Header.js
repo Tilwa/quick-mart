@@ -9,10 +9,10 @@ import { MdOutlineManageAccounts, MdLogout } from "react-icons/md";
 
 export default function Header() {
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      // placeholder for logout logic
-      console.log("Logged out");
-    }
+    // if (window.confirm("Are you sure you want to logout?")) {
+    //   // placeholder for logout logic
+    //   console.log("Logged out");
+    // }
   };
 
   return (

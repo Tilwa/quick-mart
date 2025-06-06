@@ -7,6 +7,8 @@ import Spinner from "@/app/_components/spinner/Spinner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { addProduct } from "@/app/_hooks/product/useAddProduct";
+import SpinnerMini from "@/app/_components/spinnerMini/SpinnerMini";
+import getDriveDirectLink from "@/app/utils/getDriveDirectLink";
 
 export default function AddProduct() {
   const router = useRouter();
@@ -44,10 +46,20 @@ export default function AddProduct() {
   });
 
   function onSubmit(data) {
-    mutate(data);
+    // Convert drive links before submitting to DB
+    const updatedData = {
+      ...data,
+      image1: getDriveDirectLink(data.image1),
+      image2: getDriveDirectLink(data.image2),
+      image3: getDriveDirectLink(data.image3),
+      image4: getDriveDirectLink(data.image4),
+      image5: getDriveDirectLink(data.image5),
+    };
+
+    mutate(updatedData);
   }
 
-  if (isCreating) return <Spinner />;
+  if (isCreating) return <SpinnerMini />;
   return (
     <div className="edit-product-container">
       <div className="edit-product-card">

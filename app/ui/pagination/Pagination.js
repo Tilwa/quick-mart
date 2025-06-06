@@ -4,7 +4,7 @@ import "./Pagination.css";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { useSearchParams, useRouter } from "next/navigation";
 
-const PAGE_SIZE = 7;
+const PAGE_SIZE = 10;
 
 export default function Pagination({ count }) {
   const searchParams = useSearchParams();

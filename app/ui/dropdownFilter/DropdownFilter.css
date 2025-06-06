@@ -1,0 +1,78 @@
+/* fabric name filter */
+.dropdown-checkbox-container {
+  background-color: #fff;
+  margin-top: 20px;
+}
+
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  font-weight: 100;
+  color: #387478;
+  height: 45px;
+  /* margin-bottom: 20px; */
+  border-bottom: 1px solid #e2f1e7;
+  /* background-color: yellow; */
+}
+
+.dropdown-title {
+  padding-left: 10px;
+}
+.dropdown-icon {
+  padding-right: 10px;
+}
+
+.dropdown-menu {
+  max-height: 300px;
+  padding: 10px;
+  font-size: medium;
+  overflow-y: auto; /* Add vertical scroll if content overflows */
+  overflow-x: hidden; /* Hide horizontal scroll (optional) */
+  overflow: -moz-scrollbars-none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
+  direction: ltr; /* default: scrollbar on the right */
+  text-align: left;
+
+  /* Remove scrollbar-hiding properties */
+  scrollbar-width: auto; /* Firefox */
+  -ms-overflow-style: auto; /* IE & Edge */
+  /* background-color: aqua; */
+  padding-bottom: 10px;
+
+  border-bottom: 1px solid #e2f1e7;
+}
+.dropdown-menu label {
+  direction: ltr;
+}
+.dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: #629584;
+  border-radius: 4px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #629584;
+}
+
+/* DropdownFilter.css */
+.color-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-circle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid #ccc;
+}

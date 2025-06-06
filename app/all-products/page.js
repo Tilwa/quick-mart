@@ -1,16 +1,71 @@
 "use client";
 
+const fabricOptions = [
+  "Airy Chiffon",
+  "Comfort Stretchable Fabric",
+  "Glossy Satin Weave",
+  "Linen and Cotton",
+  "Matte Luxe Silk Touch",
+  "Nida",
+  "Premium Metallic Silk",
+  "Premium Metallic Silk Satin",
+  "Premium Performance Fabric",
+  "Premium Wrinkle Resistant Satin",
+];
+
+const colorOptions = ["Red", "Blue", "Green", "Black", "White", "Yellow"];
+const sizeOptions = ["XS", "S", "M", "L", "XL", "XXL"];
+const priceOptions = ["0-50 AED", "51-100 AED", "101-200 AED", "200+ AED"];
+const availabilityOptions = ["In Stock", "Out of Stock", "Preorder"];
+
+import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io";
+import { FaSortAlphaDown } from "react-icons/fa";
+import { FaSortAlphaDownAlt } from "react-icons/fa";
 import Header from "@/app/_components/header/Header";
 import Slider from "@/app/_components/slider/Slider";
 import "./page.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "../_hooks/product/useGetAllProducts";
+import Link from "next/link";
+import Image from "next/image";
+import myImg from "@/public/img1.png";
+import DropdownFilter from "../ui/dropdownFilter/DropdownFilter";
 
 function Page() {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState("");
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
+  const [selectedFilters, setSelectedFilters] = useState({
+    "Fabric Name": [],
+    Color: [],
+    Size: [],
+    Price: [],
+    Availability: [],
+  });
+
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const toggleDropdown = () => setIsOpen(!isOpen);
+
+  const handleCheckboxChange = (option) => {
+    setSelectedOptions((prev) =>
+      prev.includes(option)
+        ? prev.filter((item) => item !== option)
+        : [...prev, option]
+    );
+  };
   const {
     isLoading,
     data: products,
@@ -22,112 +77,188 @@ function Page() {
 
   console.log(products);
 
+  const handleFilterChange = (category, option) => {
+    setSelectedFilters((prev) => {
+      const isSelected = prev[category].includes(option);
+      return {
+        ...prev,
+        [category]: isSelected
+          ? prev[category].filter((item) => item !== option)
+          : [...prev[category], option],
+      };
+    });
+  };
+
+  const applyPriceFilter = () => {
+    const filteredProducts = products.filter((product) => {
+      const price = product.price;
+      return (
+        (!minPrice || price >= parseFloat(minPrice)) &&
+        (!maxPrice || price <= parseFloat(maxPrice))
+      );
+    });
+    setFilteredProducts(filteredProducts);
+  };
+
+  useEffect(() => {
+    if (!products) return;
+    const filtered = products.filter((product) => {
+      const price = product.price;
+      return (
+        (!minPrice || price >= parseFloat(minPrice)) &&
+        (!maxPrice || price <= parseFloat(maxPrice))
+      );
+    });
+    setFilteredProducts(filtered);
+  }, [minPrice, maxPrice, products]);
+
   return (
     <div>
-      {/* <Header /> */}
+      {/* header starts here */}
+      <Header />
+      {/* header ends here */}
+
       <div className="all-prod-home">
         <Slider />
-        <h2 className="all-prod-recommended">All Products</h2>
+        <div className="all-prod-title-filters">
+          <h2 className="all-prod-title">All Products</h2>
+          {/* DROPDOWN FILTER */}
+
+          <div className="title-sort-container">
+            <p>Sort By:</p>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="sort-selector"
+            >
+              <option value="All">Select</option>
+              <option value="lowToHigh">Price Low to High ⬆️</option>
+              <option value="highToLow">Price High to Low ⬇️</option>
+              <option value="asc" id="opt-ascending">
+                Ascending Products 🔤
+              </option>
+              <option value="desc">Descending Products 🔡</option>
+            </select>
+          </div>
+        </div>
 
         <div className="all-prod-grid-container">
-          <div className="all-prod-grid-item">
-            <div className="all-prod-product-card">
-              <div className="all-prod-discount-badge">25% OFF</div>
-              <img
-                src="./img1.png"
-                alt="Storage Tin Set"
-                className="all-prod-product-img"
+          {/* filter menu starts here */}
+
+          <div className="all-prod-menus">
+            <div className="filter-titles">
+              <p>Filter </p>
+              <p>Remove All</p>
+
+              {Object.entries(selectedFilters).some(
+                ([_, values]) => values.length > 0
+              ) && (
+                <div className="active-filters">
+                  {Object.entries(selectedFilters).map(([category, values]) =>
+                    values.map((value) => (
+                      <span
+                        key={`${category}-${value}`}
+                        className="active-filter"
+                      >
+                        {value}
+                        <button
+                          className="remove-btn"
+                          onClick={() => handleFilterChange(category, value)}
+                        >
+                          ❌
+                        </button>
+                      </span>
+                    ))
+                  )}
+                  <button
+                    className="remove-all-btn"
+                    onClick={() =>
+                      setSelectedFilters({
+                        "Fabric Name": [],
+                        Color: [],
+                        Size: [],
+                        Price: [],
+                        Availability: [],
+                      })
+                    }
+                  >
+                    Remove All
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <DropdownFilter
+              title="Fabric Name"
+              options={fabricOptions}
+              selectedOptions={selectedFilters["Fabric Name"]}
+              onChange={handleFilterChange}
+            />
+            <DropdownFilter
+              title="Color"
+              options={colorOptions}
+              selectedOptions={selectedFilters["Color"]}
+              onChange={handleFilterChange}
+            />
+            <DropdownFilter
+              title="Size"
+              options={sizeOptions}
+              selectedOptions={selectedFilters["Size"]}
+              onChange={handleFilterChange}
+            />
+            <DropdownFilter
+              title="Price"
+              options={priceOptions}
+              selectedOptions={selectedFilters["Price"]}
+              onChange={handleFilterChange}
+            >
+              <input
+                type="number"
+                placeholder="From"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
               />
+              <input
+                type="number"
+                placeholder="To"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+              />
+            </DropdownFilter>
+            <DropdownFilter
+              title="Availability"
+              options={availabilityOptions}
+              selectedOptions={selectedFilters["Availability"]}
+              onChange={handleFilterChange}
+            />
+          </div>
 
-              <div className="all-prod-brand-logo">TINIFY</div>
+          {/* filter menu ends here */}
+          <div className="all-prod-products">
+            <div className="grid-item">
+              {" "}
+              <div className="product-card">
+                <div className="discount-badge">25% OFF</div>
+                <Image
+                  src={myImg}
+                  alt="Storage Tin Set"
+                  className="product-img"
+                  height={200}
+                  width={200}
+                />
 
-              <div className="all-prod-product-info">
-                <span className="all-prod-delivery-badge">Free Shipping</span>
-                <p className="all-prod-category">Storage Tins</p>
-                <h3 className="all-prod-title">Classic Tin Container Set</h3>
-                <p className="all-prod-price">49 AED</p>
-                <p className="all-prod-vat">51 AED - VAT Included</p>
+                <div className="brand-logo">TINIFY</div>
+
+                <div className="product-info">
+                  <span className="delivery-badge">Free Shipping</span>
+                  <p className="category">Storage Tins</p>
+                  <h3 className="title">Classic Tin Container Set</h3>
+                  <p className="price">49 AED</p>
+                  <p className="vat">51 AED - VAT Included</p>
+                </div>
               </div>
             </div>
           </div>
-          <div className="all-prod-grid-item">
-            {" "}
-            <div className="all-prod-product-card">
-              <div className="all-prod-discount-badge">25% OFF</div>
-              <img
-                src="./img2.png"
-                alt="Storage Tin Set"
-                className="all-prod-product-img"
-              />
-
-              <div className="all-prod-brand-logo">TINIFY</div>
-
-              <div className="all-prod-product-info">
-                <span className="all-prod-delivery-badge">Free Shipping</span>
-                <p className="all-prod-category">Storage Tins</p>
-                <h3 className="all-prod-title">Classic Tin Container Set</h3>
-                <p className="all-prod-price">49 AED</p>
-                <p className="all-prod-vat">51 AED - VAT Included</p>
-              </div>
-            </div>
-          </div>
-          <div className="all-prod-grid-item">
-            {" "}
-            <div className="all-prod-product-card">
-              <div className="all-prod-discount-badge">25% OFF</div>
-              <img
-                src="./img1.png"
-                alt="Storage Tin Set"
-                className="all-prod-product-img"
-              />
-
-              <div className="all-prod-brand-logo">TINIFY</div>
-
-              <div className="all-prod-product-info">
-                <span className="all-prod-delivery-badge">Free Shipping</span>
-                <p className="all-prod-category">Storage Tins</p>
-                <h3 className="all-prod-title">Classic Tin Container Set</h3>
-                <p className="all-prod-price">49 AED</p>
-                <p className="all-prod-vat">51 AED - VAT Included</p>
-              </div>
-            </div>
-          </div>
-          <div className="all-prod-grid-item">
-            {" "}
-            <div className="all-prod-product-card">
-              <div className="all-prod-discount-badge">25% OFF</div>
-              <img
-                src="./img1.png"
-                alt="Storage Tin Set"
-                className="all-prod-product-img"
-              />
-
-              <div className="all-prod-brand-logo">TINIFY</div>
-
-              <div className="all-prod-product-info">
-                <span className="all-prod-delivery-badge">Free Shipping</span>
-                <p className="all-prod-category">Storage Tins</p>
-                <h3 className="all-prod-title">Classic Tin Container Set</h3>
-                <p className="all-prod-price">49 AED</p>
-                <p className="all-prod-vat">51 AED - VAT Included</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="all-prod-grid-item">Item 5</div>
-          <div className="all-prod-grid-item">Item 6</div>
-          <div className="all-prod-grid-item">Item 7</div>
-          <div className="all-prod-grid-item">Item 8</div>
-
-          <div className="all-prod-grid-item">Item 9</div>
-          <div className="all-prod-grid-item">Item 10</div>
-          <div className="all-prod-grid-item">Item 11</div>
-          <div className="all-prod-grid-item">Item 12</div>
-
-          <div className="all-prod-grid-item">Item 13</div>
-          <div className="all-prod-grid-item">Item 14</div>
-          <div className="all-prod-grid-item">Item 15</div>
-          <div className="all-prod-grid-item">Item 16</div>
         </div>
       </div>
     </div>

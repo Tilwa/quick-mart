@@ -1,4 +1,6 @@
 // lib/fetchProducts.ts
+
+"use server";
 export async function getAllProducts(page = 1, search = "") {
   try {
     const query = new URLSearchParams({

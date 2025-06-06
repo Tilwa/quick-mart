@@ -57,9 +57,12 @@ function Page() {
       alert("Please select at least one row to delete.");
       return;
     }
-    const confirmDelete = window.confirm(
-      "Do you want to delete selected products?"
-    );
+    let confirmDelete;
+    if (typeof window !== "undefined") {
+      confirmDelete = window.confirm(
+        "Do you want to delete selected products?"
+      );
+    }
     if (!confirmDelete) return;
     const success = await deleteMultipleRows(selectedRows); // pass selectedRows here
     // ✅ Trigger refetch of products

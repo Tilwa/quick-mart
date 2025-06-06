@@ -1,3 +1,4 @@
+"use server";
 export async function getAllProducts({ page = 1, search = "", sortBy = "" }) {
   try {
     const params = new URLSearchParams();
