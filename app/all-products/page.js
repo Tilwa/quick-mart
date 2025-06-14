@@ -143,8 +143,6 @@ function Page() {
         </div>
 
         <div className="all-prod-grid-container">
-          {/* filter menu starts here */}
-
           <div className="all-prod-menus">
             <div className="filter-titles">
               <p>Filter </p>
@@ -233,7 +231,6 @@ function Page() {
             />
           </div>
 
-          {/* filter menu ends here */}
           <div className="all-prod-products">
             <div className="grid-item">
               {" "}

@@ -1,7 +1,8 @@
-"use server";
 export async function getProductById(productId) {
+  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+
   try {
-    const res = await fetch(`/api/products/${productId}`, {
+    const res = await fetch(`${baseUrl}/api/products/${productId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

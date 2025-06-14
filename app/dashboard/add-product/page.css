@@ -15,6 +15,7 @@
   grid-template-rows: 0.5fr 4fr;
   grid-template-columns: 1fr;
   /* background-color: peru; */
+  height: max-content;
 }
 
 .edit-product-top {
@@ -195,4 +196,134 @@
 }
 .btns-update-product {
   /* background-color: blueviolet; */
+}
+
+/* dropdown menu color */
+.color-container {
+  width: 65%;
+  /* background-color: yellow; */
+  flex: 1;
+}
+.color-dropdown-container {
+  width: 65%;
+  margin-right: 10px;
+  /* background-color: yellow; */
+  flex: 1;
+}
+
+.color-options {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 0.5rem;
+}
+
+.color-options button {
+  display: block;
+  margin: 0.25rem 0;
+  background-color: #eee;
+  padding: 0.25rem;
+  cursor: pointer;
+  border-radius: 15px;
+  /* color: #629584;
+  border: 1px solid #387478; */
+  padding: 5px 12px;
+}
+
+.selected-colors .tag {
+  display: inline-block;
+  background-color: #629584;
+  color: white;
+  margin: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: small;
+}
+
+/* dropdown menu size */
+
+.size-container {
+  width: 65%;
+
+  flex: 1;
+}
+.size-dropdown-container {
+  width: 65%;
+  margin-left: 10px;
+  flex: 1;
+}
+
+.size-options {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 0.5rem;
+}
+
+.size-options button {
+  display: block;
+  margin: 0.25rem 0;
+  background-color: #eee;
+  padding: 0.25rem;
+  cursor: pointer;
+  border-radius: 15px;
+  /* color: #629584;
+  border: 1px solid #387478; */
+  padding: 5px 12px;
+}
+
+.selected-sizes .tag {
+  display: inline-block;
+  background-color: #629584;
+  color: white;
+  margin: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: small;
+}
+
+.dropdown-toggle {
+  /* background-color: pink; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  gap: 14px;
+  color: #629584;
+  background-color: #e2f1e7;
+  font-weight: bold;
+  border: 1px solid #e2f1e7;
+  border-radius: 5px;
+}
+
+.dropdown-toggle-input {
+  /* background-color: pink; */
+  width: 100%;
+  margin-top: 10px;
+  height: 35px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  outline: none;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  padding-left: 10px;
+}
+
+.creating-product {
+  /* background-color: pink; */
+  display: flex;
+  gap: 10px;
+}
+
+.add-product-button:disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.colors-sizes-container {
+  /* background-color: pink; */
+  display: flex;
 }

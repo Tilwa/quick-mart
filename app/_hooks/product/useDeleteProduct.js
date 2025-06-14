@@ -4,7 +4,11 @@
 
 export async function deleteProduct(id) {
   try {
-    const res = await fetch(`/api/products/${id}`, {
+    const baseUrl =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : process.env.NEXTAUTH_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/products/${id}`, {
       method: "DELETE",
     });
 
@@ -18,6 +22,7 @@ export async function deleteProduct(id) {
     throw error;
   }
 }
+
 // **************************************DELETE PRODUCTS BY ID CODE ENDS********************************************* //
 
 // **************************************DELETE MULTIPLE PRODUCTS CODE STARTS********************************************* //

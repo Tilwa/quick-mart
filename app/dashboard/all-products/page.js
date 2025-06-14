@@ -15,6 +15,7 @@ import { getAllProducts } from "@/app/_hooks/product/useGetAllProducts";
 import { useRef, useState } from "react";
 import { deleteMultipleRows } from "@/app/_hooks/product/useDeleteProduct";
 import toast from "react-hot-toast";
+import Spinner from "@/app/_components/spinner/Spinner";
 
 function Page() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -77,7 +78,8 @@ function Page() {
     }
   }
 
-  // if (isLoading) return <SpinnerMini />;
+  // if (isLoading) return <Spinner />;
+
   return (
     <div className="all-products-container">
       <div className="all-products-card">

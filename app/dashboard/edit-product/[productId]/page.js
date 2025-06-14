@@ -1,18 +1,31 @@
 "use client";
 
+import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io";
 import { useForm } from "react-hook-form";
 import Spinner from "@/app/_components/spinner/Spinner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./page.css";
 import { editUpdateProduct } from "@/app/_hooks/product/useEditProduct";
 import { getProductById } from "@/app/_hooks/product/useGetProductById";
 import getDriveDirectLink from "@/app/utils/getDriveDirectLink";
+import { getAllSizes } from "@/app/_hooks/size/useGetAllSizes";
+import { getAllColors } from "@/app/_hooks/color/useGetAllColors";
 
 function Page() {
   const router = useRouter();
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [searchTermColor, setSearchTermColor] = useState("");
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [searchTermSize, setSearchTermSize] = useState("");
+
+  const [showColorDropdown, setShowColorDropdown] = useState(false);
+  const [hasFetchedColors, setHasFetchedColors] = useState(false);
+  const [showSizeDropdown, setShowSizeDropdown] = useState(false);
+  const [hasFetchedSizes, setHasFetchedSizes] = useState(false);
 
   // getting productId and path link
   const pathname = usePathname();
@@ -27,14 +40,7 @@ function Page() {
       enabled: !!productId,
     });
   }
-
   const { data: product, isLoading: isFetching, error } = useProduct(productId);
-  // console.log(product);
-
-  // old way to use product content from reactQuery temporary
-  // const queryClient = useQueryClient();
-  // const products = queryClient.getQueryData(["product"]);
-  // const product = products?.count?.find((p) => p.id === productId);
 
   const {
     register,
@@ -55,6 +61,8 @@ function Page() {
       image3: "",
       image4: "",
       image5: "",
+      colors: "",
+      sizes: "",
       id: "",
     },
   });
@@ -74,8 +82,17 @@ function Page() {
         image3: product.image3 || "",
         image4: product.image4 || "",
         image5: product.image5 || "",
+        colors: product.colors || [],
+        sizes: product.sizes || [],
         id: product.id || "",
       });
+
+      // 🟢 Extract nested color and size objects
+      const selectedColorObjects = product.colors?.map((c) => c.color) || [];
+      const selectedSizeObjects = product.sizes?.map((s) => s.size) || [];
+
+      setSelectedColors(selectedColorObjects);
+      setSelectedSizes(selectedSizeObjects);
     }
   }, [product, reset]);
 
@@ -85,7 +102,13 @@ function Page() {
     mutationFn: editUpdateProduct,
     onSuccess: () => {
       toast.success("Product updated successfully!");
-      queryClient.invalidateQueries(["product", productId]);
+
+      queryClient.invalidateQueries({ queryKey: ["colors"] });
+      queryClient.invalidateQueries({ queryKey: ["sizes"] });
+      queryClient.invalidateQueries({ queryKey: ["product", productId] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      setSelectedColors([]);
+      setSelectedSizes([]);
       reset();
 
       router.push("/dashboard/all-products");
@@ -95,25 +118,73 @@ function Page() {
     },
   });
 
-  function onSubmit(data) {
-    // Convert drive links before submitting to DB
-    const updatedData = {
-      ...data,
-      image1: getDriveDirectLink(data.image1),
-      image2: getDriveDirectLink(data.image2),
-      image3: getDriveDirectLink(data.image3),
-      image4: getDriveDirectLink(data.image4),
-      image5: getDriveDirectLink(data.image5),
-    };
+  // fetching all colors
+  const {
+    isLoading: isFetchingColors,
+    data: colorData,
+    error: errorColor,
+  } = useQuery({
+    queryKey: ["colors", searchTermColor],
+    queryFn: () => getAllColors({ search: searchTermColor }),
+  });
 
-    mutate({ productData: updatedData, productId });
+  // fetching all sizes
+  const {
+    isLoading: isFetchingSize,
+    data: sizeData,
+    error: errorSize,
+  } = useQuery({
+    queryKey: ["sizes", searchTermSize],
+    queryFn: () => getAllSizes({ search: searchTermSize }),
+  });
+
+  // UseEffect to fetch when dropdown is opened
+  useEffect(() => {
+    if (showColorDropdown && !hasFetchedColors) {
+      queryClient.prefetchQuery({
+        queryKey: ["colors", ""],
+        queryFn: () => getAllColors({ search: "" }),
+      });
+      setHasFetchedColors(true);
+    }
+  }, [showColorDropdown, hasFetchedColors, queryClient]);
+
+  // UseEffect to fetch when dropdown is opened
+  useEffect(() => {
+    if (showSizeDropdown && !hasFetchedSizes) {
+      queryClient.prefetchQuery({
+        queryKey: ["sizes", ""],
+        queryFn: () => getAllSizes({ search: "" }),
+      });
+      setHasFetchedSizes(true);
+    }
+  }, [showSizeDropdown, hasFetchedSizes, queryClient]);
+
+  function onSubmit(data) {
+    mutate({
+      productData: {
+        ...data,
+        colors: selectedColors.map((c) => ({
+          colorId: c.color?.id || c.id, // safe fallback
+        })),
+        sizes: selectedSizes.map((s) => ({
+          sizeId: s.size?.id || s.id, // safe fallback
+        })),
+        image1: getDriveDirectLink(data.image1),
+        image2: getDriveDirectLink(data.image2),
+        image3: getDriveDirectLink(data.image3),
+        image4: getDriveDirectLink(data.image4),
+        image5: getDriveDirectLink(data.image5),
+      },
+      productId,
+    });
   }
 
   // checking conditions
   if (!productId) return <div>Product ID not found</div>;
   // if (!product)
   //   return <div>Products not found in cache. Go back and retry.</div>;
-  if (isFetching || isUpdating) return <Spinner />;
+  // if (isFetching || isUpdating) return <Spinner />;
 
   return (
     <div className="edit-product-container">
@@ -179,7 +250,6 @@ function Page() {
                   inputMode="decimal" // Mobile keyboards
                 />
               </div>
-
               {/* Right Fields */}
               <div className="add-product-form-group-container-right">
                 <InputField
@@ -225,7 +295,158 @@ function Page() {
                   error={errors.image5}
                   required={false}
                 />
+              </div>{" "}
+            </div>
+            {/* both dropdown starts from here */}
+            <div className="colors-sizes-container">
+              {/* color dropdown starts here */}
+              <div className="color-container">
+                <div className="color-dropdown-container">
+                  <button
+                    type="button"
+                    className="dropdown-toggle"
+                    onClick={() => setShowColorDropdown(!showColorDropdown)}
+                  >
+                    Select Colors{" "}
+                    <span>
+                      {showColorDropdown === true ? (
+                        <IoIosArrowUp />
+                      ) : (
+                        <IoIosArrowDown />
+                      )}
+                    </span>
+                  </button>
+
+                  {showColorDropdown && (
+                    <div className="color-dropdown-content">
+                      <input
+                        type="text"
+                        placeholder="Search color here..."
+                        value={searchTermColor}
+                        onChange={(e) => setSearchTermColor(e.target.value)}
+                        className="dropdown-toggle-input"
+                      />
+
+                      <div className="color-options">
+                        {colorData?.map((color) => {
+                          const alreadySelected = selectedColors.find(
+                            (c) => c.id === color.id
+                          );
+                          return (
+                            <div key={color.id}>
+                              <button
+                                type="button"
+                                disabled={
+                                  alreadySelected || selectedColors.length >= 5
+                                }
+                                onClick={() =>
+                                  setSelectedColors((prev) => [...prev, color])
+                                }
+                              >
+                                {color.name}
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Selected */}
+                  <div className="selected-colors">
+                    {selectedColors.map((color) => (
+                      <div key={color.id} className="tag">
+                        {color.name}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedColors((prev) =>
+                              prev.filter((c) => c.id !== color.id)
+                            )
+                          }
+                        >
+                          ✖
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
+              {/* color dropdown ends here */}{" "}
+              {/* sizes dropdown starts here */}
+              <div className="size-container">
+                <div className="size-dropdown-container">
+                  <button
+                    type="button"
+                    className="dropdown-toggle"
+                    onClick={() => setShowSizeDropdown(!showSizeDropdown)}
+                  >
+                    Select Sizes{" "}
+                    <span>
+                      {showColorDropdown === true ? (
+                        <IoIosArrowUp />
+                      ) : (
+                        <IoIosArrowDown />
+                      )}
+                    </span>
+                  </button>
+
+                  {showSizeDropdown && (
+                    <div className="size-dropdown-content">
+                      <input
+                        type="text"
+                        placeholder="Search size here..."
+                        value={searchTermSize}
+                        onChange={(e) => setSearchTermSize(e.target.value)}
+                        className="dropdown-toggle-input"
+                      />
+
+                      <div className="size-options">
+                        {sizeData?.map((size) => {
+                          const alreadySelected = selectedSizes.find(
+                            (c) => c.id === size.id
+                          );
+                          return (
+                            <div key={size.id}>
+                              <button
+                                type="button"
+                                disabled={
+                                  alreadySelected || selectedSizes.length >= 5
+                                }
+                                onClick={() =>
+                                  setSelectedSizes((prev) => [...prev, size])
+                                }
+                              >
+                                {size.label}
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Selected */}
+                  <div className="selected-sizes">
+                    {selectedSizes.map((size) => (
+                      <div key={size.id} className="tag">
+                        {size.label}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedSizes((prev) =>
+                              prev.filter((c) => c.id !== size.id)
+                            )
+                          }
+                        >
+                          ✖
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              {/* size dropdown ends here */}
             </div>
             {/* Buttons */}{" "}
             <div className="btns-update-product">

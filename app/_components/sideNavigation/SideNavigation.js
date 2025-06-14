@@ -20,10 +20,16 @@ const navLinks = [
     icon: <HomeIcon width={20} height={20} />,
   },
   {
-    name: "All Products",
+    name: "All Products ssssssss",
     href: "/dashboard/all-products",
     icon: <FolderIcon width={20} height={20} />,
   },
+  {
+    name: "Categories",
+    href: "/dashboard/categories",
+    icon: <FolderIcon width={20} height={20} />,
+  },
+
   {
     name: "Add Product",
     href: "/dashboard/add-product",

@@ -4,18 +4,53 @@ import { useForm } from "react-hook-form";
 
 import "./page.css";
 import Spinner from "@/app/_components/spinner/Spinner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { addProduct } from "@/app/_hooks/product/useAddProduct";
 import SpinnerMini from "@/app/_components/spinnerMini/SpinnerMini";
 import getDriveDirectLink from "@/app/utils/getDriveDirectLink";
+import { getAllColors } from "@/app/_hooks/color/useGetAllColors";
+import { useEffect, useState } from "react";
+import { getAllSizes } from "@/app/_hooks/size/useGetAllSizes";
+import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io";
+import SpinnerMiniButton from "@/app/_components/spinnerMiniButton/SpinnerMiniButton";
 
 export default function AddProduct() {
-  const router = useRouter();
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [searchTermColor, setSearchTermColor] = useState("");
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [searchTermSize, setSearchTermSize] = useState("");
 
+  const [showColorDropdown, setShowColorDropdown] = useState(false);
+  const [hasFetchedColors, setHasFetchedColors] = useState(false);
+  const [showSizeDropdown, setShowSizeDropdown] = useState(false);
+  const [hasFetchedSizes, setHasFetchedSizes] = useState(false);
+
+  const router = useRouter();
   // Get the current pathname
   const pathname = usePathname();
   const formattedPath = pathname.slice(1).split("/").join(" > ");
+
+  // fetching all colors
+  const {
+    isLoading: isFetchingColors,
+    data: colorData,
+    error: errorColor,
+  } = useQuery({
+    queryKey: ["colors", searchTermColor],
+    queryFn: () => getAllColors({ search: searchTermColor }),
+  });
+
+  // fetching all sizes
+  const {
+    isLoading: isFetchingSize,
+    data: sizeData,
+    error: errorSize,
+  } = useQuery({
+    queryKey: ["sizes", searchTermSize],
+    queryFn: () => getAllSizes({ search: searchTermSize }),
+  });
 
   // Form handling
   const {
@@ -26,18 +61,22 @@ export default function AddProduct() {
   } = useForm();
 
   // Add product mutation
-
   const queryClient = useQueryClient();
-  const { isLoading: isCreating, mutate } = useMutation({
+  const {
+    mutate,
+    isLoading: isCreating,
+    isSuccess,
+    isError,
+  } = useMutation({
     mutationFn: addProduct,
     onSuccess: () => {
       toast.success("Product added successfully!");
-      queryClient.invalidateQueries({
-        queryKey: ["product"],
-      });
 
+      queryClient.invalidateQueries({ queryKey: ["colors"] });
+      queryClient.invalidateQueries({ queryKey: ["sizes"] });
+      setSelectedColors([]);
+      setSelectedSizes([]);
       reset();
-
       router.push("/dashboard/all-products");
     },
     onError: (error) => {
@@ -45,10 +84,14 @@ export default function AddProduct() {
     },
   });
 
+  // console.log("isCreating:", isCreating);
+
   function onSubmit(data) {
     // Convert drive links before submitting to DB
     const updatedData = {
       ...data,
+      colorIds: selectedColors.map((c) => c.id),
+      sizeIds: selectedSizes.map((c) => c.id),
       image1: getDriveDirectLink(data.image1),
       image2: getDriveDirectLink(data.image2),
       image3: getDriveDirectLink(data.image3),
@@ -58,6 +101,28 @@ export default function AddProduct() {
 
     mutate(updatedData);
   }
+
+  // UseEffect to fetch when dropdown is opened
+  useEffect(() => {
+    if (showColorDropdown && !hasFetchedColors) {
+      queryClient.prefetchQuery({
+        queryKey: ["colors", ""],
+        queryFn: () => getAllColors({ search: "" }),
+      });
+      setHasFetchedColors(true);
+    }
+  }, [showColorDropdown, hasFetchedColors, queryClient]);
+
+  // UseEffect to fetch when dropdown is opened
+  useEffect(() => {
+    if (showSizeDropdown && !hasFetchedSizes) {
+      queryClient.prefetchQuery({
+        queryKey: ["sizes", ""],
+        queryFn: () => getAllSizes({ search: "" }),
+      });
+      setHasFetchedSizes(true);
+    }
+  }, [showSizeDropdown, hasFetchedSizes, queryClient]);
 
   if (isCreating) return <SpinnerMini />;
   return (
@@ -172,6 +237,157 @@ export default function AddProduct() {
                 />
               </div>
             </div>
+            {/* both dropdown starts from here */}
+            <div className="colors-sizes-container">
+              {/* color dropdown starts here */}
+              <div className="color-container">
+                <div className="color-dropdown-container">
+                  <button
+                    type="button"
+                    className="dropdown-toggle"
+                    onClick={() => setShowColorDropdown(!showColorDropdown)}
+                  >
+                    Select Colors{" "}
+                    <span>
+                      {showColorDropdown === true ? (
+                        <IoIosArrowUp />
+                      ) : (
+                        <IoIosArrowDown />
+                      )}
+                    </span>
+                  </button>
+
+                  {showColorDropdown && (
+                    <div className="color-dropdown-content">
+                      <input
+                        type="text"
+                        placeholder="Search color here..."
+                        value={searchTermColor}
+                        onChange={(e) => setSearchTermColor(e.target.value)}
+                        className="dropdown-toggle-input"
+                      />
+
+                      <div className="color-options">
+                        {colorData?.map((color) => {
+                          const alreadySelected = selectedColors.find(
+                            (c) => c.id === color.id
+                          );
+                          return (
+                            <div key={color.id}>
+                              <button
+                                type="button"
+                                disabled={
+                                  alreadySelected || selectedColors.length >= 5
+                                }
+                                onClick={() =>
+                                  setSelectedColors((prev) => [...prev, color])
+                                }
+                              >
+                                {color.name}
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Selected */}
+                  <div className="selected-colors">
+                    {selectedColors.map((color) => (
+                      <div key={color.id} className="tag">
+                        {color.name}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedColors((prev) =>
+                              prev.filter((c) => c.id !== color.id)
+                            )
+                          }
+                        >
+                          ✖
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              {/* color dropdown ends here */}{" "}
+              {/* sizes dropdown starts here */}
+              <div className="size-container">
+                <div className="size-dropdown-container">
+                  <button
+                    type="button"
+                    className="dropdown-toggle"
+                    onClick={() => setShowSizeDropdown(!showSizeDropdown)}
+                  >
+                    Select Sizes{" "}
+                    <span>
+                      {showColorDropdown === true ? (
+                        <IoIosArrowUp />
+                      ) : (
+                        <IoIosArrowDown />
+                      )}
+                    </span>
+                  </button>
+
+                  {showSizeDropdown && (
+                    <div className="size-dropdown-content">
+                      <input
+                        type="text"
+                        placeholder="Search size here..."
+                        value={searchTermSize}
+                        onChange={(e) => setSearchTermSize(e.target.value)}
+                        className="dropdown-toggle-input"
+                      />
+
+                      <div className="size-options">
+                        {sizeData?.map((size) => {
+                          const alreadySelected = selectedSizes.find(
+                            (c) => c.id === size.id
+                          );
+                          return (
+                            <div key={size.id}>
+                              <button
+                                type="button"
+                                disabled={
+                                  alreadySelected || selectedSizes.length >= 5
+                                }
+                                onClick={() =>
+                                  setSelectedSizes((prev) => [...prev, size])
+                                }
+                              >
+                                {size.label}
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Selected */}
+                  <div className="selected-sizes">
+                    {selectedSizes.map((size) => (
+                      <div key={size.id} className="tag">
+                        {size.label}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedSizes((prev) =>
+                              prev.filter((c) => c.id !== size.id)
+                            )
+                          }
+                        >
+                          ✖
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              {/* size dropdown ends here */}
+            </div>
             {/* Buttons */}{" "}
             <div className="btns-update-product">
               <button type="reset" className="cancel-product-button">
@@ -182,7 +398,13 @@ export default function AddProduct() {
                 className="add-product-button"
                 disabled={isCreating}
               >
-                Add product
+                {isCreating ? (
+                  <span className="creating-product">
+                    Creating... <SpinnerMiniButton />
+                  </span>
+                ) : (
+                  "Add Product"
+                )}
               </button>
             </div>
           </form>

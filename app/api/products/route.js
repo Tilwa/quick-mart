@@ -2,36 +2,76 @@ import { prisma } from "@/app/_lib/prisma"; // adjust as per your folder
 import { NextResponse } from "next/server";
 
 // **************************************ADD PRODUCT CODE STARTS********************************************* //
+
 export async function POST(request) {
   try {
     const body = await request.json();
 
+    const {
+      title,
+      description,
+      brand,
+      category,
+      offerPrice,
+      originalPrice,
+      inStock,
+      image1,
+      image2,
+      image3,
+      image4,
+      image5,
+      colorIds = [], // array of existing color IDs
+      sizeIds = [], // array of existing size IDs
+    } = body;
+
     const product = await prisma.product.create({
       data: {
-        title: body.title,
-        description: body.description,
-        brand: body.brand,
-        category: body.category,
-        offerPrice: parseFloat(body.offerPrice),
-        originalPrice: parseFloat(body.originalPrice),
-        inStock: parseInt(body.inStock),
-        image1: body.image1,
-        image2: body.image2,
-        image3: body.image3,
-        image4: body.image4,
-        image5: body.image5,
+        title,
+        description,
+        brand,
+        category,
+        offerPrice: parseFloat(offerPrice),
+        originalPrice: parseFloat(originalPrice),
+        inStock: parseInt(inStock),
+        image1,
+        image2,
+        image3,
+        image4,
+        image5,
+        colors: {
+          create: colorIds.map((colorId) => ({
+            color: {
+              connect: { id: colorId },
+            },
+          })),
+        },
+        sizes: {
+          create: sizeIds.map((sizeId) => ({
+            size: {
+              connect: { id: sizeId },
+            },
+          })),
+        },
+      },
+      include: {
+        colors: true,
+        sizes: true,
       },
     });
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
-    console.error("Error adding product:", error);
+    console.error("Error adding product:", error?.message || error);
     return NextResponse.json(
-      { message: "Failed to add product", error: error.message },
+      {
+        message: "Failed to add product",
+        error: error?.message || "Unknown error",
+      },
       { status: 500 }
     );
   }
 }
+
 // **************************************ADD PRODUCT CODE ENDS********************************************* //
 
 // **************************************GET ALL PRODUCTS CODE STARTS********************************************* //
