@@ -18,6 +18,7 @@
   height: 100vh; /* Make it cover the full viewport height */
   width: 256px;
   overflow-y: auto; /* Allow scrolling if content is too long */
+  overflow-y: scroll;
 }
 #sidebar-logo {
   width: 125px;
@@ -103,4 +104,52 @@
   align-items: center;
   gap: 10px; /* Space between icon and text */
   margin: 20px;
+}
+
+/* ecommerce dropdown */
+.sidebar-menu-dropdown {
+  display: flex;
+  flex-direction: row;
+}
+
+#dropdown-icon-arrow {
+  margin-left: 10px;
+}
+
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  cursor: pointer;
+  /* background-color: #f7f7f7;
+  border-radius: 8px; */
+}
+
+.dropdown-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  /* background: white;
+  border-top: 1px solid #ccc; */
+  /* border-bottom: 1px solid #ccc; */
+}
+
+.dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* Chrome, Edge, Safari */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* IE 10+ */
 }

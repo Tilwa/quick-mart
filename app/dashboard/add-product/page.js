@@ -268,13 +268,16 @@ export default function AddProduct() {
                       />
 
                       <div className="color-options">
-                        {colorData?.map((color) => {
+                        {colorData?.colors?.map((color) => {
                           const alreadySelected = selectedColors.find(
                             (c) => c.id === color.id
                           );
                           return (
                             <div key={color.id}>
                               <button
+                                style={{
+                                  backgroundColor: color.hexCode,
+                                }}
                                 type="button"
                                 disabled={
                                   alreadySelected || selectedColors.length >= 5
@@ -342,7 +345,7 @@ export default function AddProduct() {
                       />
 
                       <div className="size-options">
-                        {sizeData?.map((size) => {
+                        {sizeData?.sizes?.map((size) => {
                           const alreadySelected = selectedSizes.find(
                             (c) => c.id === size.id
                           );

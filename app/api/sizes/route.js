@@ -7,25 +7,27 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
 
     const search = searchParams.get("search") || "";
-    const page = parseInt(searchParams.get("page") || "1");
-    const sortBy = searchParams.get("sortBy") || "label";
-    const pageSize = 10;
 
-    const sizes = await prisma.size.findMany({
-      where: {
-        label: {
-          contains: search,
-          mode: "insensitive",
+    const [sizes, count] = await Promise.all([
+      prisma.size.findMany({
+        where: {
+          label: {
+            contains: search,
+            mode: "insensitive",
+          },
         },
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      orderBy: {
-        [sortBy]: "asc",
-      },
-    });
+      }),
+      prisma.size.count({
+        where: {
+          label: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+      }),
+    ]);
 
-    return Response.json(sizes);
+    return NextResponse.json({ count, sizes });
   } catch (error) {
     console.error("Error fetching sizes:", error);
     return new Response(JSON.stringify({ error: "Failed to fetch sizes" }), {

@@ -2,21 +2,51 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/app/_lib/prisma"; // adjust path if needed
 
 // **************************************GET ALL COLORS STARTS HERE********************************************* //
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") || "";
+    const page = searchParams.get("page");
+    const sortBy = searchParams.get("sortBy") || "name";
+    const pageSize = 10;
 
-    const colors = await prisma.color.findMany({
-      where: {
-        name: {
-          contains: search,
-          mode: "insensitive",
-        },
+    // Common where clause
+    const whereClause = {
+      name: {
+        contains: search,
+        mode: "insensitive",
       },
-    });
+    };
 
-    return Response.json(colors);
+    // If pagination is requested
+    if (page) {
+      const pageNum = parseInt(page);
+
+      const [colors, count] = await Promise.all([
+        prisma.color.findMany({
+          where: whereClause,
+          skip: (pageNum - 1) * pageSize,
+          take: pageSize,
+          orderBy: {
+            [sortBy]: "asc",
+          },
+        }),
+        prisma.color.count({ where: whereClause }),
+      ]);
+
+      return NextResponse.json({ count, colors });
+    }
+
+    // If no pagination, return all colors
+    const [colors, count] = await Promise.all([
+      prisma.color.findMany({
+        where: whereClause,
+      }),
+      prisma.color.count({ where: whereClause }),
+    ]);
+
+    return NextResponse.json({ count, colors });
   } catch (error) {
     console.error("Error fetching colors:", error);
     return new Response(JSON.stringify({ error: "Failed to fetch colors" }), {
@@ -24,43 +54,10 @@ export async function GET(request) {
     });
   }
 }
+
 // **************************************GET ALL COLORS ENDS HERE********************************************* //
 
-// GET all colors
-
-// export async function GET(request) {
-//   try {
-//     const { searchParams } = new URL(request.url);
-
-//     const search = searchParams.get("search") || "";
-//     const page = parseInt(searchParams.get("page") || "1");
-//     const sortBy = searchParams.get("sortBy") || "name";
-//     const pageSize = 10;
-
-//     const colors = await prisma.color.findMany({
-//       where: {
-//         name: {
-//           contains: search,
-//           mode: "insensitive",
-//         },
-//       },
-//       skip: (page - 1) * pageSize,
-//       take: pageSize,
-//       orderBy: {
-//         [sortBy]: "asc",
-//       },
-//     });
-
-//     return Response.json(colors);
-//   } catch (error) {
-//     console.error("Error fetching colors:", error);
-//     return new Response(JSON.stringify({ error: "Failed to fetch colors" }), {
-//       status: 500,
-//     });
-//   }
-// }
-
-// POST a new color
+// **************************************ADD A COLOR STARTS HERE********************************************* //
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -78,3 +75,5 @@ export async function POST(request) {
     );
   }
 }
+
+// **************************************ADD A COLOR ENDS HERE********************************************* //

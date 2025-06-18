@@ -156,8 +156,9 @@ export async function PATCH(request) {
 
 // **************************************DELETE PRODUCT BY ID CODE STARTS********************************************* //
 
-export async function DELETE(request, { params }) {
-  const { productId } = params;
+export async function DELETE(request, context) {
+  const { params } = await context;
+  const productId = params?.productId;
 
   if (!productId || isNaN(parseInt(productId))) {
     return NextResponse.json(
@@ -169,13 +170,13 @@ export async function DELETE(request, { params }) {
   const id = parseInt(productId);
 
   try {
-    const deletedProduct = await prisma.product.delete({
-      where: { id },
-    });
+    await prisma.productColor.deleteMany({ where: { productId: id } });
+    await prisma.productSize.deleteMany({ where: { productId: id } });
+    const deletedProduct = await prisma.product.delete({ where: { id } });
 
     return NextResponse.json(deletedProduct, { status: 200 });
   } catch (error) {
-    console.error("Error deleting product:", error);
+    console.error("Error deleting product:", error?.message || error);
     return NextResponse.json(
       { message: "Failed to delete product" },
       { status: 500 }
@@ -190,19 +191,36 @@ export async function DELETE(request, { params }) {
 export async function POST(req) {
   try {
     const { ids } = await req.json();
+
     if (!Array.isArray(ids) || ids.length === 0) {
       return NextResponse.json({ message: "No IDs provided" }, { status: 400 });
     }
 
-    await prisma.product.deleteMany({
+    // Step 1: Delete related product colors
+    await prisma.productColor.deleteMany({
       where: {
-        id: {
-          in: ids,
-        },
+        productId: { in: ids },
       },
     });
 
-    return NextResponse.json({ message: "Deleted successfully" });
+    // Step 2: Delete related product sizes
+    await prisma.productSize.deleteMany({
+      where: {
+        productId: { in: ids },
+      },
+    });
+
+    // Step 3: Delete the products themselves
+    await prisma.product.deleteMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+
+    return NextResponse.json(
+      { message: "Deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Delete error:", error);
     return NextResponse.json({ error: "Failed to delete" }, { status: 500 });

@@ -1,9 +1,9 @@
 export async function getAllSizes({ search = "" }) {
   try {
-    // const params = new URLSearchParams();
-    // if (search) params.append("search", search);
+    const params = new URLSearchParams();
+    if (search) params.append("search", search);
 
-    const res = await fetch(`/api/sizes`);
+    const res = await fetch(`/api/sizes?${params.toString()}`);
     if (!res.ok) throw new Error("Failed to fetch sizes");
 
     const data = await res.json();

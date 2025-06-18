@@ -1,21 +1,26 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-import AllProductsTable from "@/app/ui/allProductsTable/AllProductsTable";
 import "./page.css";
 
+import { RiAddLargeFill } from "react-icons/ri";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { FaSortAlphaDownAlt } from "react-icons/fa";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAllProducts } from "@/app/_hooks/product/useGetAllProducts";
-import { useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { useEffect, useRef, useState } from "react";
 import { deleteMultipleRows } from "@/app/_hooks/product/useDeleteProduct";
 import toast from "react-hot-toast";
 import Spinner from "@/app/_components/spinner/Spinner";
+import AllColorsTable from "@/app/ui/allColorsTable/AllColorsTable";
+import { getAllColors } from "@/app/_hooks/color/useGetAllColors";
+import { useForm } from "react-hook-form";
+import { addColor } from "@/app/_hooks/color/useAddColor";
+import SpinnerMiniButton from "@/app/_components/spinnerMiniButton/SpinnerMiniButton";
 
 function Page() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,19 +30,25 @@ function Page() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeViewMenu, setActiveViewMenu] = useState(false);
 
+  const [showColorModal, setShowColorModal] = useState(false);
+  const [hasFetchedColors, setHasFetchedColors] = useState(false);
+  const router = useRouter();
+
   // Get the current pathname
   const pathname = usePathname();
   const formattedPath = pathname.slice(1).split("/").join(" > ");
 
-  // fetching all products initially
+  // fetching all colors initially
+
   const {
     isLoading,
-    data: products,
+    data: colors,
     error,
   } = useQuery({
-    queryKey: ["products", page, searchTerm, sortBy],
-    queryFn: () => getAllProducts({ page, search: searchTerm, sortBy }),
+    queryKey: ["colors", page, searchTerm, sortBy],
+    queryFn: () => getAllColors({ page, search: searchTerm, sortBy }),
   });
+  //console.log(colors.colors);
 
   // toggle when menu button clicked
   const menuRef = useRef(null);
@@ -46,9 +57,9 @@ function Page() {
   };
 
   // counting total pages
-  const totalPages = Math.ceil(products?.count / 10);
+  const totalPages = Math.ceil(colors?.count / 10);
 
-  // using queryClient for trigger refetch products
+  // using queryClient for trigger refetch colors
   const queryClient = useQueryClient();
 
   // deleting multiple rows
@@ -66,9 +77,7 @@ function Page() {
     // ✅ browser-safe confirm
     let confirmDelete = true;
     if (typeof window !== "undefined") {
-      confirmDelete = window.confirm(
-        "Do you want to delete selected products?"
-      );
+      confirmDelete = window.confirm("Do you want to delete selected colors?");
     }
 
     if (!confirmDelete) return;
@@ -78,10 +87,10 @@ function Page() {
 
       if (success) {
         toast.success(`Product(s) deleted successfully!`);
-        queryClient.invalidateQueries({ queryKey: ["products"] });
+        queryClient.invalidateQueries({ queryKey: ["colors"] });
         setSelectedRows([]);
       } else {
-        toast.error(`❌ Failed to delete products`);
+        toast.error(`❌ Failed to delete colors`);
       }
     } catch (err) {
       console.error("Delete error:", err);
@@ -89,23 +98,48 @@ function Page() {
     }
   }
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: addColor,
+    onSuccess: () => {
+      toast.success("Color added successfully!");
+
+      queryClient.invalidateQueries(["colors"]);
+      setShowColorModal(false);
+      reset();
+      router.push("/dashboard/product-colors");
+    },
+    onError: (err) => {
+      toast.error(`❌ Failed: ${error.message}`);
+      console.error(err);
+    },
+  });
+
+  const onSubmit = (data) => mutate(data);
+
   // if (isLoading) return <Spinner />;
 
   return (
-    <div className="all-products-container">
-      <div className="all-products-card">
-        <div className="all-products-top">
+    <div className="all-colors-container">
+      <div className="all-colors-card">
+        <div className="all-colors-top">
           <div className="edit-product-path">
             <p>{formattedPath}</p>
           </div>
-          <div className="edit-product-title">All Products</div>
-          <div className="all-products-top-bottom">
+          <div className="edit-product-title">All Colors</div>
+          <div className="all-colors-top-bottom">
             <div>
-              {/* search products bar */}
+              {/* search colors bar */}
               <input
                 type="text"
-                id="all-products-search"
-                placeholder="Search products here..."
+                id="all-colors-search"
+                placeholder="Search colors here..."
                 value={searchTerm}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -122,7 +156,7 @@ function Page() {
                 ? ""
                 : selectedRows.length > 0 && (
                     <button
-                      className="all-products-status-filter"
+                      className="all-colors-status-filter"
                       onClick={handleDeleteMultipleRows}
                     >
                       Delete{" "}
@@ -134,19 +168,27 @@ function Page() {
 
             {/* toggle view button */}
             <div className="view-menu-wrapper" ref={menuRef}>
-              <button id="all-products-view" onClick={toggleMenu}>
-                View By
-              </button>
-
+              <div className="view-by-btns">
+                {" "}
+                <button id="all-colors-view" onClick={toggleMenu}>
+                  View By
+                </button>
+                <button
+                  id="add-color-btn"
+                  onClick={() => setShowColorModal(true)}
+                >
+                  <p>Add Color</p> <RiAddLargeFill />
+                </button>
+              </div>
               {activeViewMenu && (
                 <div id="view-by-menus">
                   <ul id="view-by-menu-list">
-                    <li onClick={() => setSortBy("price-asc")}>
+                    {/* <li onClick={() => setSortBy("price-asc")}>
                       Price Low to High ⬆️
                     </li>
                     <li onClick={() => setSortBy("price-desc")}>
                       Price High to Low ⬇️
-                    </li>
+                    </li> */}
                     <li onClick={() => setSortBy("title-asc")}>
                       Ascending Order{" "}
                       <FaSortAlphaDown
@@ -164,10 +206,10 @@ function Page() {
             </div>
           </div>
         </div>
-        <div className="all-products-middle">
-          <AllProductsTable
+        <div className="all-colors-middle">
+          <AllColorsTable
             isLoading={isLoading}
-            products={products}
+            colors={colors}
             deleteTenRows={deleteTenRows}
             setDeleteTenRows={setDeleteTenRows}
             selectedRows={selectedRows}
@@ -175,13 +217,13 @@ function Page() {
           />
         </div>
 
-        <div className="all-products-bottom">
-          <p id="all-products-rows">
+        <div className="all-colors-bottom">
+          <p id="all-colors-rows">
             {" "}
-            {selectedRows.length} of {products?.count} row(s) selected.
+            {selectedRows.length} of {colors?.count} row(s) selected.
           </p>
 
-          <div className="all-products-pages">
+          <div className="all-colors-pages">
             <p>Rows per page 10</p>
             <p>
               Page {page} of {totalPages}
@@ -206,8 +248,90 @@ function Page() {
           </div>
         </div>
       </div>
+
+      {/* show Color Modal */}
+      {showColorModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <button
+              className="modal-close"
+              onClick={() => setShowColorModal(false)}
+            >
+              ✕
+            </button>
+            <h2 id="add-color-modal-title">Add New Color</h2>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div>
+                <InputField
+                  label="Color Name *"
+                  id="name"
+                  type="text"
+                  register={register}
+                  error={errors.name}
+                  requiredMessage="Color name is required ⛔"
+                />
+              </div>
+              <div>
+                <InputField
+                  label="Color HEX *"
+                  id="hexCode"
+                  type="text"
+                  register={register}
+                  error={errors.hexCode}
+                  requiredMessage="Color code is required ⛔"
+                />
+              </div>
+
+              <div className="btns-update-product">
+                <button type="reset" className="cancel-color-button">
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="add-color-button"
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <span className="creating-color">
+                      Adding... <SpinnerMiniButton />
+                    </span>
+                  ) : (
+                    "Add Color"
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default Page;
+
+// Reusable input field
+function InputField({
+  label,
+  id,
+  type = "text",
+  register,
+  error,
+  required = true,
+  requiredMessage,
+}) {
+  return (
+    <div className="add-color-form-group">
+      <label htmlFor={id}>{label}</label>
+      <div className="input-and-error-container">
+        <input
+          type={type}
+          id={id}
+          placeholder={`Enter your ${id}`}
+          {...register(id, required ? { required: requiredMessage } : {})}
+        />
+        {error && <p className="error-message">{error.message}</p>}
+      </div>
+    </div>
+  );
+}

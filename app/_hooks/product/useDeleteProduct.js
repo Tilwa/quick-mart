@@ -1,5 +1,3 @@
-"use server";
-
 // **************************************DELETE PRODUCT BY ID CODE STARTS********************************************* //
 
 export async function deleteProduct(id) {
@@ -39,7 +37,7 @@ export async function deleteMultipleRows(selectedRows) {
 
     return true; // return a flag so you can check success
   } catch (err) {
-    alert("Deletion failed");
+    // alert("Deletion failed");
     console.error(err);
     return false;
   }
