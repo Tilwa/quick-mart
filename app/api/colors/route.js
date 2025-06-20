@@ -3,55 +3,105 @@ import { prisma } from "@/app/_lib/prisma"; // adjust path if needed
 
 // **************************************GET ALL COLORS STARTS HERE********************************************* //
 
-export async function GET(request) {
+// export async function GET(request) {
+//   try {
+//     const { searchParams } = new URL(request.url);
+//     const search = searchParams.get("search") || "";
+//     const page = searchParams.get("page");
+//     const sortBy = searchParams.get("sortBy") || "name";
+//     const pageSize = 10;
+
+//     // Common where clause
+//     const whereClause = {
+//       name: {
+//         contains: search,
+//         mode: "insensitive",
+//       },
+//     };
+
+//     // If pagination is requested
+//     if (page) {
+//       const pageNum = parseInt(page);
+
+//       const [colors, count] = await Promise.all([
+//         prisma.color.findMany({
+//           where: whereClause,
+//           skip: (pageNum - 1) * pageSize,
+//           take: pageSize,
+//           orderBy: {
+//             [sortBy]: "asc",
+//           },
+//         }),
+//         prisma.color.count({ where: whereClause }),
+//       ]);
+
+//       return NextResponse.json({ count, colors });
+//     }
+
+//     // If no pagination, return all colors
+//     const [colors, count] = await Promise.all([
+//       prisma.color.findMany({
+//         where: whereClause,
+//       }),
+//       prisma.color.count({ where: whereClause }),
+//     ]);
+
+//     return NextResponse.json({ count, colors });
+//   } catch (error) {
+//     console.error("Error fetching colors:", error);
+//     return new Response(JSON.stringify({ error: "Failed to fetch colors" }), {
+//       status: 500,
+//     });
+//   }
+// }
+
+export async function GET(req = request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const search = searchParams.get("search") || "";
-    const page = searchParams.get("page");
-    const sortBy = searchParams.get("sortBy") || "name";
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1", 10);
     const pageSize = 10;
 
-    // Common where clause
-    const whereClause = {
-      name: {
-        contains: search,
-        mode: "insensitive",
-      },
-    };
+    const search = searchParams.get("search") || "";
+    const sortBy = searchParams.get("sortBy") || "";
 
-    // If pagination is requested
-    if (page) {
-      const pageNum = parseInt(page);
+    const whereClause = search
+      ? {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { hexCode: { contains: search, mode: "insensitive" } },
+          ],
+        }
+      : {};
 
-      const [colors, count] = await Promise.all([
-        prisma.color.findMany({
-          where: whereClause,
-          skip: (pageNum - 1) * pageSize,
-          take: pageSize,
-          orderBy: {
-            [sortBy]: "asc",
-          },
-        }),
-        prisma.color.count({ where: whereClause }),
-      ]);
-
-      return NextResponse.json({ count, colors });
+    let orderByClause = null;
+    if (sortBy === "name-asc") {
+      orderByClause = { name: "asc" };
+    } else if (sortBy === "name-desc") {
+      orderByClause = { name: "desc" };
     }
 
-    // If no pagination, return all colors
-    const [colors, count] = await Promise.all([
-      prisma.color.findMany({
-        where: whereClause,
-      }),
+    const queryOptions = {
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      where: whereClause,
+    };
+
+    if (orderByClause) {
+      queryOptions.orderBy = orderByClause;
+    }
+
+    const [count, colors] = await Promise.all([
       prisma.color.count({ where: whereClause }),
+      prisma.color.findMany(queryOptions),
     ]);
 
-    return NextResponse.json({ count, colors });
+    return NextResponse.json({ colors, count });
   } catch (error) {
-    console.error("Error fetching colors:", error);
-    return new Response(JSON.stringify({ error: "Failed to fetch colors" }), {
-      status: 500,
-    });
+    console.error("API error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch colors" },
+      { status: 500 }
+    );
   }
 }
 

@@ -1,14 +1,16 @@
-export async function editColorWithId(id, { name, hexCode }) {
-  try {
-    const res = await fetch(`/api/colors/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, hexCode }),
-    });
-    if (!res.ok) throw new Error("Failed to update color");
-    return await res.json();
-  } catch (error) {
-    console.error("Error updating color:", error);
-    throw error;
+export async function editColorWithId({ colorData, colorId }) {
+  const res = await fetch(`/api/colors/${colorId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(colorData),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to update color");
   }
+
+  return res.json();
 }

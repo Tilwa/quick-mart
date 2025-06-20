@@ -12,8 +12,8 @@ import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { useEffect, useRef, useState } from "react";
-import { deleteMultipleRows } from "@/app/_hooks/product/useDeleteProduct";
+import { useRef, useState } from "react";
+
 import toast from "react-hot-toast";
 import Spinner from "@/app/_components/spinner/Spinner";
 import AllColorsTable from "@/app/ui/allColorsTable/AllColorsTable";
@@ -21,6 +21,7 @@ import { getAllColors } from "@/app/_hooks/color/useGetAllColors";
 import { useForm } from "react-hook-form";
 import { addColor } from "@/app/_hooks/color/useAddColor";
 import SpinnerMiniButton from "@/app/_components/spinnerMiniButton/SpinnerMiniButton";
+import { deleteMultipleColors } from "@/app/_hooks/color/useDeleteColor";
 
 function Page() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,7 +32,7 @@ function Page() {
   const [activeViewMenu, setActiveViewMenu] = useState(false);
 
   const [showColorModal, setShowColorModal] = useState(false);
-  const [hasFetchedColors, setHasFetchedColors] = useState(false);
+
   const router = useRouter();
 
   // Get the current pathname
@@ -83,10 +84,10 @@ function Page() {
     if (!confirmDelete) return;
 
     try {
-      const success = await deleteMultipleRows(selectedRows);
+      const success = await deleteMultipleColors(selectedRows);
 
       if (success) {
-        toast.success(`Product(s) deleted successfully!`);
+        toast.success(`Color(s) deleted successfully!`);
         queryClient.invalidateQueries({ queryKey: ["colors"] });
         setSelectedRows([]);
       } else {
@@ -189,14 +190,14 @@ function Page() {
                     <li onClick={() => setSortBy("price-desc")}>
                       Price High to Low ⬇️
                     </li> */}
-                    <li onClick={() => setSortBy("title-asc")}>
+                    <li onClick={() => setSortBy("name-asc")}>
                       Ascending Order{" "}
                       <FaSortAlphaDown
                         className="view-by-icons"
                         id="view-by-icons-asc"
                       />
                     </li>
-                    <li onClick={() => setSortBy("title-desc")}>
+                    <li onClick={() => setSortBy("name-desc")}>
                       Descending Order{" "}
                       <FaSortAlphaDownAlt className="view-by-icons" />
                     </li>

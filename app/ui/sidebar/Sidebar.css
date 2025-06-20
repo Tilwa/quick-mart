@@ -1,11 +1,12 @@
 .admin-sidebar-container {
   width: 100%;
   height: 100%;
-  padding: 20px;
+  /* padding: 20px; */
+  padding: 20px 0px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-right: 1px solid #e2f1e7;
+  /* border-right: 1px solid #e2f1e7; */
   background-color: white;
   box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
   background-color: #243642;
@@ -32,7 +33,7 @@
   display: flex;
   flex-direction: column;
 
-  padding: 0px 5px;
+  /* padding: 0px 5px; */
   margin-top: 20px;
   /* background-color: tomato; */
 }
@@ -53,6 +54,9 @@
   align-items: center;
   gap: 10px; /* Space between icon and text */
 }
+.sidebar-dropdown-menu-item {
+  padding-left: 25px;
+}
 
 /* Links styling */
 .sidebar-menu li a {
@@ -60,8 +64,8 @@
 
   color: #387478;
   font-size: 17px;
-  padding: 10px 15px;
-  border-radius: 5px;
+  padding: 10px 25px;
+  /* border-radius: 5px; */
   display: flex; /* Flexbox for aligning icon and text */
   align-items: center;
   gap: 10px; /* Space between icon and text */

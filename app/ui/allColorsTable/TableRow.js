@@ -6,8 +6,9 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import "./TableRow.css"; // Assuming you have a CSS file for styling
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteProduct } from "@/app/_hooks/product/useDeleteProduct";
+
 import toast from "react-hot-toast";
+import { deleteColorWithId } from "@/app/_hooks/color/useDeleteColor";
 
 function TableRow({
   color,
@@ -30,25 +31,25 @@ function TableRow({
 
   const queryClient = useQueryClient();
   const { isLoading: isDeleting, mutate } = useMutation({
-    mutationFn: deleteProduct,
+    mutationFn: deleteColorWithId,
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["product"],
+        queryKey: ["colors"],
       });
-      toast.success("Product deleted successfully!");
+      toast.success("Color deleted successfully!");
     },
     onError: (error) => {
       toast.error(`❌ Failed: ${error.message}`);
     },
   });
 
-  function handleDeleteProduct(productId) {
+  function handleDeleteColor(colorId) {
     let confirmDelete;
     if (typeof window !== "undefined") {
-      confirmDelete = window.confirm("Do you want to delete selected product?");
+      confirmDelete = window.confirm("Do you want to delete selected color?");
     }
     if (confirmDelete) {
-      mutate(productId, {
+      mutate(colorId, {
         onSuccess: () => {
           // ✅ Trigger refetch of colors
           queryClient.invalidateQueries({ queryKey: ["colors"] });
@@ -88,7 +89,7 @@ function TableRow({
               </Link>
 
               <li
-                onClick={() => handleDeleteProduct(colorId)}
+                onClick={() => handleDeleteColor(colorId)}
                 disabled={isDeleting}
               >
                 Delete

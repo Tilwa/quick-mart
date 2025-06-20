@@ -63,7 +63,7 @@ export default function Sidebar() {
               <ul className="dropdown-list">
                 <li>
                   <Link href="/dashboard/add-product">
-                    <div className="sidebar-menu-item">
+                    <div className="sidebar-menu-item sidebar-dropdown-menu-item">
                       <BsDatabaseFillAdd className="sidebar-menu-icon" />
                       <p>Add Product</p>
                     </div>
@@ -71,7 +71,7 @@ export default function Sidebar() {
                 </li>
                 <li>
                   <Link href="/dashboard/all-products">
-                    <div className="sidebar-menu-item">
+                    <div className="sidebar-menu-item sidebar-dropdown-menu-item">
                       <IoMdListBox className="sidebar-menu-icon" />
                       <p>All Products</p>
                     </div>
@@ -79,7 +79,7 @@ export default function Sidebar() {
                 </li>
                 <li>
                   <Link href="/dashboard/product-colors">
-                    <div className="sidebar-menu-item">
+                    <div className="sidebar-menu-item sidebar-dropdown-menu-item">
                       <IoIosColorPalette className="sidebar-menu-icon" />
                       <p>Product Colors</p>
                     </div>

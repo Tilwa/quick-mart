@@ -8,7 +8,7 @@ function SignOutButton() {
     <div className="sign-out-container">
       <form action={signOutAction}>
         <button className="sidebar-sign-out-button">
-          <FaSignOutAlt className="sidebar-menu-icon" />
+          <FaSignOutAlt className="signout-menu-icon" />
           <span className="sidebar-logout-txt">Sign out </span>
         </button>
       </form>
