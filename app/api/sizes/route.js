@@ -1,42 +1,58 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/_lib/prisma"; // adjust path if needed
 
-// GET all sizes
-export async function GET(request) {
+// **************************************GET ALL SIZES STARTS HERE********************************************* //
+
+export async function GET(req = request) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const pageSize = 10;
 
     const search = searchParams.get("search") || "";
+    const sortBy = searchParams.get("sortBy") || "";
 
-    const [sizes, count] = await Promise.all([
-      prisma.size.findMany({
-        where: {
-          label: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-      }),
-      prisma.size.count({
-        where: {
-          label: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-      }),
+    const whereClause = search
+      ? {
+          OR: [{ label: { contains: search, mode: "insensitive" } }],
+        }
+      : {};
+
+    let orderByClause = null;
+    if (sortBy === "label-asc") {
+      orderByClause = { label: "asc" };
+    } else if (sortBy === "label-desc") {
+      orderByClause = { label: "desc" };
+    }
+
+    const queryOptions = {
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      where: whereClause,
+    };
+
+    if (orderByClause) {
+      queryOptions.orderBy = orderByClause;
+    }
+
+    const [count, sizes] = await Promise.all([
+      prisma.size.count({ where: whereClause }),
+      prisma.size.findMany(queryOptions),
     ]);
 
-    return NextResponse.json({ count, sizes });
+    return NextResponse.json({ sizes, count });
   } catch (error) {
-    console.error("Error fetching sizes:", error);
-    return new Response(JSON.stringify({ error: "Failed to fetch sizes" }), {
-      status: 500,
-    });
+    console.error("API error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch sizes" },
+      { status: 500 }
+    );
   }
 }
 
-// POST a new size
+// **************************************GET ALL SIZES ENDS HERE********************************************* //
+
+// **************************************ADD A SIZES STARTS HERE********************************************* //
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -54,3 +70,5 @@ export async function POST(request) {
     );
   }
 }
+
+// **************************************ADD A SIZE ENDS HERE********************************************* //
