@@ -84,6 +84,14 @@ export default function Sidebar() {
                       <p>Product Colors</p>
                     </div>
                   </Link>
+                </li>{" "}
+                <li>
+                  <Link href="/dashboard/product-sizes">
+                    <div className="sidebar-menu-item sidebar-dropdown-menu-item">
+                      <IoIosColorPalette className="sidebar-menu-icon" />
+                      <p>Product Sizes</p>
+                    </div>
+                  </Link>
                 </li>
               </ul>
             )}

@@ -82,7 +82,7 @@ function TableRow({
           <div id="color-menus">
             <ul id="color-menu-list">
               <Link
-                href={`/dashboard/edit-color/${colorId}`}
+                href={`/dashboard/product-colors/edit-color/${colorId}`}
                 id="edit-color-link"
               >
                 <li>Edit</li>

@@ -36,7 +36,8 @@ function Page() {
     error,
   } = useQuery({
     queryKey: ["products", page, searchTerm, sortBy],
-    queryFn: () => getAllProducts({ page, search: searchTerm, sortBy }),
+    queryFn: () =>
+      getAllProducts({ page, search: searchTerm, sortBy, pageSize: 10 }),
   });
 
   // toggle when menu button clicked

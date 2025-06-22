@@ -13,15 +13,14 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useRef, useState } from "react";
-
 import toast from "react-hot-toast";
 import Spinner from "@/app/_components/spinner/Spinner";
-import AllColorsTable from "@/app/ui/allColorsTable/AllColorsTable";
-import { getAllColors } from "@/app/_hooks/color/useGetAllColors";
 import { useForm } from "react-hook-form";
-import { addColor } from "@/app/_hooks/color/useAddColor";
 import SpinnerMiniButton from "@/app/_components/spinnerMiniButton/SpinnerMiniButton";
-import { deleteMultipleColors } from "@/app/_hooks/color/useDeleteColor";
+import { getAllSizes } from "@/app/_hooks/size/useGetAllSizes";
+import { deleteMultipleSizes } from "@/app/_hooks/size/useDeleteSize";
+import { addSize } from "@/app/_hooks/size/useAddSize";
+import AllSizesTable from "@/app/ui/allSizesTable/AllSizesTable";
 
 function Page() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,7 +30,7 @@ function Page() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeViewMenu, setActiveViewMenu] = useState(false);
 
-  const [showColorModal, setShowColorModal] = useState(false);
+  const [showSizeModal, setShowSizeModal] = useState(false);
 
   const router = useRouter();
 
@@ -39,18 +38,18 @@ function Page() {
   const pathname = usePathname();
   const formattedPath = pathname.slice(1).split("/").join(" > ");
 
-  // fetching all colors initially
+  // fetching all sizes initially
 
   const {
     isLoading,
-    data: colors,
+    data: sizes,
     error,
   } = useQuery({
-    queryKey: ["colors", page, searchTerm, sortBy],
+    queryKey: ["sizes", page, searchTerm, sortBy],
     queryFn: () =>
-      getAllColors({ page, search: searchTerm, sortBy, pageSize: 10 }),
+      getAllSizes({ page, search: searchTerm, sortBy, pageSize: 10 }),
   });
-  //console.log(colors.colors);
+  //console.log(colors.sizes);
 
   // toggle when menu button clicked
   const menuRef = useRef(null);
@@ -59,9 +58,9 @@ function Page() {
   };
 
   // counting total pages
-  const totalPages = Math.ceil(colors?.count / 10);
+  const totalPages = Math.ceil(sizes?.count / 10);
 
-  // using queryClient for trigger refetch colors
+  // using queryClient for trigger refetch sizes
   const queryClient = useQueryClient();
 
   // deleting multiple rows
@@ -79,20 +78,20 @@ function Page() {
     // ✅ browser-safe confirm
     let confirmDelete = true;
     if (typeof window !== "undefined") {
-      confirmDelete = window.confirm("Do you want to delete selected colors?");
+      confirmDelete = window.confirm("Do you want to delete selected sizes?");
     }
 
     if (!confirmDelete) return;
 
     try {
-      const success = await deleteMultipleColors(selectedRows);
+      const success = await deleteMultipleSizes(selectedRows);
 
       if (success) {
-        toast.success(`Color(s) deleted successfully!`);
-        queryClient.invalidateQueries({ queryKey: ["colors"] });
+        toast.success(`Size(s) deleted successfully!`);
+        queryClient.invalidateQueries({ queryKey: ["sizes"] });
         setSelectedRows([]);
       } else {
-        toast.error(`❌ Failed to delete colors`);
+        toast.error(`❌ Failed to delete sizes`);
       }
     } catch (err) {
       console.error("Delete error:", err);
@@ -108,14 +107,14 @@ function Page() {
   } = useForm();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: addColor,
+    mutationFn: addSize,
     onSuccess: () => {
-      toast.success("Color added successfully!");
+      toast.success("Size added successfully!");
 
-      queryClient.invalidateQueries(["colors"]);
-      setShowColorModal(false);
+      queryClient.invalidateQueries(["sizes"]);
+      setShowSizeModal(false);
       reset();
-      router.push("/dashboard/product-colors");
+      router.push("/dashboard/product-sizes");
     },
     onError: (err) => {
       toast.error(`❌ Failed: ${error.message}`);
@@ -128,20 +127,20 @@ function Page() {
   // if (isLoading) return <Spinner />;
 
   return (
-    <div className="all-colors-container">
-      <div className="all-colors-card">
-        <div className="all-colors-top">
+    <div className="all-sizes-container">
+      <div className="all-sizes-card">
+        <div className="all-sizes-top">
           <div className="edit-product-path">
             <p>{formattedPath}</p>
           </div>
-          <div className="edit-product-title">All Colors</div>
-          <div className="all-colors-top-bottom">
+          <div className="edit-product-title">All Sizes</div>
+          <div className="all-sizes-top-bottom">
             <div>
-              {/* search colors bar */}
+              {/* search sizes bar */}
               <input
                 type="text"
-                id="all-colors-search"
-                placeholder="Search colors here..."
+                id="all-sizes-search"
+                placeholder="Search sizes here..."
                 value={searchTerm}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -158,7 +157,7 @@ function Page() {
                 ? ""
                 : selectedRows.length > 0 && (
                     <button
-                      className="all-colors-status-filter"
+                      className="all-sizes-status-filter"
                       onClick={handleDeleteMultipleRows}
                     >
                       Delete{" "}
@@ -172,33 +171,27 @@ function Page() {
             <div className="view-menu-wrapper" ref={menuRef}>
               <div className="view-by-btns">
                 {" "}
-                <button id="all-colors-view" onClick={toggleMenu}>
+                <button id="all-sizes-view" onClick={toggleMenu}>
                   View By
                 </button>
                 <button
-                  id="add-color-btn"
-                  onClick={() => setShowColorModal(true)}
+                  id="add-size-btn"
+                  onClick={() => setShowSizeModal(true)}
                 >
-                  <p>Add Color</p> <RiAddLargeFill />
+                  <p>Add Size</p> <RiAddLargeFill />
                 </button>
               </div>
               {activeViewMenu && (
                 <div id="view-by-menus">
                   <ul id="view-by-menu-list">
-                    {/* <li onClick={() => setSortBy("price-asc")}>
-                      Price Low to High ⬆️
-                    </li>
-                    <li onClick={() => setSortBy("price-desc")}>
-                      Price High to Low ⬇️
-                    </li> */}
-                    <li onClick={() => setSortBy("name-asc")}>
+                    <li onClick={() => setSortBy("label-asc")}>
                       Ascending Order{" "}
                       <FaSortAlphaDown
                         className="view-by-icons"
                         id="view-by-icons-asc"
                       />
                     </li>
-                    <li onClick={() => setSortBy("name-desc")}>
+                    <li onClick={() => setSortBy("label-desc")}>
                       Descending Order{" "}
                       <FaSortAlphaDownAlt className="view-by-icons" />
                     </li>
@@ -208,10 +201,10 @@ function Page() {
             </div>
           </div>
         </div>
-        <div className="all-colors-middle">
-          <AllColorsTable
+        <div className="all-sizes-middle">
+          <AllSizesTable
             isLoading={isLoading}
-            colors={colors}
+            sizes={sizes}
             deleteTenRows={deleteTenRows}
             setDeleteTenRows={setDeleteTenRows}
             selectedRows={selectedRows}
@@ -219,13 +212,13 @@ function Page() {
           />
         </div>
 
-        <div className="all-colors-bottom">
-          <p id="all-colors-rows">
+        <div className="all-sizes-bottom">
+          <p id="all-sizes-rows">
             {" "}
-            {selectedRows.length} of {colors?.count} row(s) selected.
+            {selectedRows.length} of {sizes?.count} row(s) selected.
           </p>
 
-          <div className="all-colors-pages">
+          <div className="all-sizes-pages">
             <p>Rows per page 10</p>
             <p>
               Page {page} of {totalPages}
@@ -252,53 +245,43 @@ function Page() {
       </div>
 
       {/* show Color Modal */}
-      {showColorModal && (
+      {showSizeModal && (
         <div className="modal-overlay">
           <div className="modal-box">
             <button
               className="modal-close"
-              onClick={() => setShowColorModal(false)}
+              onClick={() => setShowSizeModal(false)}
             >
               ✕
             </button>
-            <h2 id="add-color-modal-title">Add New Color</h2>
+            <h2 id="add-size-modal-title">Add New Size</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div>
                 <InputField
-                  label="Color Name *"
-                  id="name"
+                  label="Size Name *"
+                  id="label"
                   type="text"
                   register={register}
-                  error={errors.name}
-                  requiredMessage="Color name is required ⛔"
-                />
-              </div>
-              <div>
-                <InputField
-                  label="Color HEX *"
-                  id="hexCode"
-                  type="text"
-                  register={register}
-                  error={errors.hexCode}
-                  requiredMessage="Color code is required ⛔"
+                  error={errors.label}
+                  requiredMessage="Size name is required ⛔"
                 />
               </div>
 
               <div className="btns-update-product">
-                <button type="reset" className="cancel-color-button">
+                <button type="reset" className="cancel-size-button">
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="add-color-button"
+                  className="add-size-button"
                   disabled={isPending}
                 >
                   {isPending ? (
-                    <span className="creating-color">
+                    <span className="creating-size">
                       Adding... <SpinnerMiniButton />
                     </span>
                   ) : (
-                    "Add Color"
+                    "Add Size"
                   )}
                 </button>
               </div>
@@ -323,7 +306,7 @@ function InputField({
   requiredMessage,
 }) {
   return (
-    <div className="add-color-form-group">
+    <div className="add-size-form-group">
       <label htmlFor={id}>{label}</label>
       <div className="input-and-error-container">
         <input

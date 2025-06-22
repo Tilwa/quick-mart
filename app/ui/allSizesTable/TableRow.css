@@ -1,4 +1,4 @@
-#color-menus {
+#size-menus {
   position: absolute;
   right: 46px;
   background-color: white;
@@ -10,24 +10,24 @@
   min-width: 94px;
 }
 
-#color-menu-list {
+#size-menu-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-#color-menu-list li {
+#size-menu-list li {
   padding: 8px 12px;
   cursor: pointer;
   transition: background-color 0.2s ease;
   color: #387478;
 }
 
-#color-menu-list li:hover {
+#size-menu-list li:hover {
   background-color: #f0f0f0;
 }
 
-#edit-color-link {
+#edit-size-link {
   color: #387478;
   text-decoration: none;
 }
@@ -38,7 +38,7 @@
   cursor: pointer;
   font-size: 15px;
 }
-#color-hex-container {
+#size-hex-container {
   padding: 8px;
   border-radius: 4px;
   margin: 8px;

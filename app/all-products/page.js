@@ -1,23 +1,5 @@
 "use client";
 
-const fabricOptions = [
-  "Airy Chiffon",
-  "Comfort Stretchable Fabric",
-  "Glossy Satin Weave",
-  "Linen and Cotton",
-  "Matte Luxe Silk Touch",
-  "Nida",
-  "Premium Metallic Silk",
-  "Premium Metallic Silk Satin",
-  "Premium Performance Fabric",
-  "Premium Wrinkle Resistant Satin",
-];
-
-const colorOptions = ["Red", "Blue", "Green", "Black", "White", "Yellow"];
-const sizeOptions = ["XS", "S", "M", "L", "XL", "XXL"];
-const priceOptions = ["0-50 AED", "51-100 AED", "101-200 AED", "200+ AED"];
-const availabilityOptions = ["In Stock", "Out of Stock", "Preorder"];
-
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
 import { FaSortAlphaDown } from "react-icons/fa";
@@ -53,6 +35,40 @@ function Page() {
   const [maxPrice, setMaxPrice] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [isClient, setIsClient] = useState(false);
+
+  // fetching all products initially
+  const {
+    isPending: isProductsLoading,
+    data: products,
+    error: productsError,
+  } = useQuery({
+    queryKey: ["products", page, searchTerm, sortBy],
+    queryFn: () =>
+      getAllProducts({ page, search: searchTerm, sortBy, pageSize: 50 }),
+  });
+
+  // fetching all colors initially
+  const {
+    isPending: isColorsLoading,
+    data: colors,
+    error: colorsError,
+  } = useQuery({
+    queryKey: ["colors", page, searchTerm, sortBy],
+    queryFn: () =>
+      getAllColors({ page, search: searchTerm, sortBy, pageSize: 50 }),
+  });
+
+  // fetching all sizes initially
+  const {
+    isPending: isSizesLoading,
+    data: sizes,
+    error: sizesError,
+  } = useQuery({
+    queryKey: ["sizes", page, searchTerm, sortBy],
+    queryFn: () =>
+      getAllSizes({ page, search: searchTerm, sortBy, pageSize: 50 }),
+  });
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -66,16 +82,6 @@ function Page() {
         : [...prev, option]
     );
   };
-  const {
-    isLoading,
-    data: products,
-    error,
-  } = useQuery({
-    queryKey: ["products", page, searchTerm, sortBy],
-    queryFn: () => getAllProducts(page, searchTerm, sortBy),
-  });
-
-  console.log(products);
 
   const handleFilterChange = (category, option) => {
     setSelectedFilters((prev) => {
@@ -112,10 +118,14 @@ function Page() {
     setFilteredProducts(filtered);
   }, [minPrice, maxPrice, products]);
 
+  useEffect(() => {
+    setFilteredProducts(products);
+  }, [products]);
+
   return (
     <div>
       {/* header starts here */}
-      <Header />
+      {/* <Header /> */}
       {/* header ends here */}
 
       <div className="all-prod-home">
@@ -233,7 +243,6 @@ function Page() {
 
           <div className="all-prod-products">
             <div className="grid-item">
-              {" "}
               <div className="product-card">
                 <div className="discount-badge">25% OFF</div>
                 <Image

@@ -80,7 +80,8 @@ export async function GET(req = request) {
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
-    const pageSize = 10;
+    const pageSize = parseInt(searchParams.get("pageSize") || "50", 10);
+    // const pageSize = 10;
 
     const search = searchParams.get("search") || "";
     const sortBy = searchParams.get("sortBy") || "";
@@ -122,7 +123,7 @@ export async function GET(req = request) {
       prisma.product.findMany(queryOptions),
     ]);
 
-    return NextResponse.json({ products, count });
+    return NextResponse.json({ count, products });
   } catch (error) {
     console.error("API error:", error);
     return NextResponse.json(

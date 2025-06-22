@@ -1,10 +1,10 @@
-.all-colors-container {
+.all-sizes-container {
   height: 100%;
   margin: auto 20px;
   padding: 20px 0;
 }
 
-.all-colors-card {
+.all-sizes-card {
   background-color: white;
   min-height: 100%;
   border-radius: 10px;
@@ -17,7 +17,7 @@
   height: max-content;
 }
 
-.all-colors-top {
+.all-sizes-top {
   /* background-color: rgb(186, 245, 179); */
   display: flex;
   flex-direction: column;
@@ -40,7 +40,7 @@
   font-weight: bolder;
   color: #243642;
 }
-.all-colors-top-middle {
+.all-sizes-top-middle {
   background-color: rgb(40, 246, 226);
   flex: 3;
   font-size: xx-large;
@@ -48,7 +48,7 @@
   color: #243642;
 }
 
-.all-colors-top-bottom {
+.all-sizes-top-bottom {
   /* background-color: rgb(104, 102, 7); */
   flex: 2;
   display: flex;
@@ -57,7 +57,7 @@
   margin-top: 10px;
 }
 
-#all-colors-search {
+#all-sizes-search {
   width: 300px;
   padding: 7px;
   border-radius: 5px;
@@ -76,7 +76,7 @@
   gap: 10px;
 }
 
-#all-colors-view {
+#all-sizes-view {
   width: 60px;
   padding: 6px;
   border-radius: 3px;
@@ -91,7 +91,7 @@
   border: 2px solid #e2f1e7;
 }
 
-#add-color-btn {
+#add-size-btn {
   width: 60px;
   padding: 6px;
   border-radius: 3px;
@@ -110,7 +110,7 @@
   justify-content: center;
   gap: 10px;
 }
-.all-colors-status-filter {
+.all-sizes-status-filter {
   width: 60px;
   padding: 6px;
   border-radius: 3px;
@@ -123,19 +123,19 @@
   width: max-content;
   /* display: none; */
 }
-.all-colors-bottom {
+.all-sizes-bottom {
   background-color: #e2f1e7;
   outline: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-#all-colors-rows {
+#all-sizes-rows {
   font-size: small;
   color: #243642;
   margin-left: 10px;
 }
-.all-colors-pages {
+.all-sizes-pages {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -159,7 +159,7 @@
 
 #view-by-menus {
   position: absolute;
-  right: 207px;
+  right: 202px;
   top: 113px;
   background-color: white;
   border: 1px solid #e9e9e9;
@@ -233,7 +233,7 @@
   justify-content: center;
   flex-direction: column; */
 }
-#add-color-modal-title {
+#add-size-modal-title {
   font-size: 24px;
   font-weight: bold;
   color: #243642;
@@ -271,7 +271,7 @@
 }
 
 /* Trigger Button */
-.add-color-button {
+.add-size-button {
   padding: 8px 16px;
   background-color: #2563eb;
   color: white;
@@ -280,18 +280,18 @@
   cursor: pointer;
 }
 
-.add-color-button:hover {
+.add-size-button:hover {
   background-color: #1d4ed8;
 }
 
 /* add color form */
 /* Form group */
-.add-color-form-group {
+.add-size-form-group {
   display: flex;
   flex-direction: column;
 }
 
-.add-color-form-group label {
+.add-size-form-group label {
   font-size: 14px;
   font-weight: bold;
 
@@ -299,7 +299,7 @@
   color: #629584;
 }
 
-.add-color-form-group input {
+.add-size-form-group input {
   padding: 8px;
   font-size: 14px;
   border-radius: 5px;
@@ -311,7 +311,7 @@
 }
 
 /* On focus, change border and shadow color */
-.add-color-form-group input:focus {
+.add-size-form-group input:focus {
   border-color: #e2f1e7; /* Custom border color on focus */
   box-shadow: 0 0 5px #e2f1e7; /* Optional shadow effect */
   outline: none; /* Remove default outline */
@@ -326,7 +326,7 @@
   font-size: 14px;
 }
 
-.add-color-button {
+.add-size-button {
   padding: 8px 12px;
   font-size: 16px;
   font-weight: medium;
@@ -339,10 +339,10 @@
   transition: background-color 0.3s ease;
 }
 
-.add-color-button:hover {
+.add-size-button:hover {
   background-color: #387478e5;
 }
-.cancel-color-button {
+.cancel-size-button {
   padding: 8px 12px;
   font-size: 16px;
   font-weight: medium;
@@ -356,6 +356,6 @@
   margin-right: 10px;
 }
 
-.cancel-color-button:hover {
+.cancel-size-button:hover {
   background-color: #ccc;
 }
