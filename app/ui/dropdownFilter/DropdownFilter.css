@@ -1,7 +1,8 @@
 /* fabric name filter */
 .dropdown-checkbox-container {
   background-color: #fff;
-  margin-top: 20px;
+  /* margin-top: 20px; */
+  /* margin: 10px 0; */
 }
 
 .dropdown-header {
@@ -75,4 +76,49 @@
   border-radius: 50%;
   display: inline-block;
   border: 1px solid #ccc;
+}
+
+/* extra */
+.color-circle-selectable {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 6px;
+  border: 2px solid #ccc;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.color-circle-selectable:hover {
+  transform: scale(1.1);
+}
+
+.color-circle-selectable.selected {
+  border-color: #387478;
+  box-shadow: 0 0 0 2px #d1ebe4;
+}
+.color-options-list {
+  display: flex;
+  flex-direction: row;
+
+  gap: 10px;
+  padding: 2px;
+  align-items: center;
+  /* background-color: #f9f9f9; */
+}
+
+.price-range-inputs {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.price-range-inputs input {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
 }

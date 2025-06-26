@@ -4,21 +4,19 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 import "./DropdownFilter.css";
 
-const DropdownFilter = ({ title, options, selectedOptions, onChange }) => {
+const DropdownFilter = ({
+  title,
+  options,
+  selectedOptions,
+  onChange,
+  isColor = false,
+  children,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleCheckboxChange = (option) => {
     onChange(title, option);
-  };
-
-  const colorMap = {
-    Red: "#FF0000",
-    Blue: "#0000FF",
-    Green: "#008000",
-    Black: "#000000",
-    White: "#FFFFFF",
-    Yellow: "#FFFF00",
   };
 
   return (
@@ -31,31 +29,39 @@ const DropdownFilter = ({ title, options, selectedOptions, onChange }) => {
       </div>
 
       {isOpen && (
-        <div className="dropdown-options">
-          {options.map((option, index) =>
-            title === "Color" ? (
-              <label key={index} className="checkbox-option color-option">
-                <input
-                  type="checkbox"
-                  checked={selectedOptions.includes(option)}
-                  onChange={() => handleCheckboxChange(option)}
-                />
-                <span
-                  className="color-circle"
-                  style={{ backgroundColor: colorMap[option] || "#387478" }}
-                ></span>
-                {option}
-              </label>
-            ) : (
-              <label key={index} className="checkbox-option">
-                <input
-                  type="checkbox"
-                  checked={selectedOptions.includes(option)}
-                  onChange={() => handleCheckboxChange(option)}
-                />
-                {option}
-              </label>
-            )
+        <div className="dropdown-menu">
+          {isColor
+            ? options.map((color) => (
+                <div key={color.id} className="color-options-list">
+                  <span
+                    key={color.id}
+                    className={`color-circle-selectable ${
+                      selectedOptions.includes(color.name) ? "selected" : ""
+                    }`}
+                    title={color.name}
+                    style={{ backgroundColor: color.hexCode }}
+                    onClick={() => handleCheckboxChange(color.name)}
+                  >
+                    {" "}
+                    {/* {color.name} */}
+                  </span>{" "}
+                  <span className="color-name-selectable">{color.name}</span>
+                </div>
+              ))
+            : options.map((option, index) => (
+                <label key={index} className="checkbox-option">
+                  <input
+                    type="checkbox"
+                    checked={selectedOptions.includes(option)}
+                    onChange={() => handleCheckboxChange(option)}
+                  />
+                  {option}
+                </label>
+              ))}
+
+          {/* 👇 Here you handle custom UI like price range */}
+          {children && (
+            <div className="custom-dropdown-content">{children}</div>
           )}
         </div>
       )}
