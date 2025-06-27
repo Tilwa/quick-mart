@@ -71,3 +71,19 @@ model Size {
   products  ProductSize[]
 }
 
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  name        String
+  mobile      String
+  quantity    Int
+  emirate     String
+  address     String
+  price       Float
+  productId   Int
+  productTitle String
+  variantColor String?
+  variantSize  String?
+  variantImage String?
+  createdAt   DateTime @default(now())
+}

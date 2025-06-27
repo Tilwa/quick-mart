@@ -43,28 +43,40 @@ export async function GET(req) {
     else if (sortBy === "title-asc") orderBy = { title: "asc" };
     else if (sortBy === "title-desc") orderBy = { title: "desc" };
 
-    let products = await prisma.product.findMany({
-      skip: (page - 1) * pageSize,
-      take: pageSize,
+    // First: fetch ALL matching products just to count total
+    const allMatchingProducts = await prisma.product.findMany({
       where,
       include,
       ...(sortBy && { orderBy }),
     });
 
-    // post-filter for color and size (many-to-many)
+    // Filter colors and sizes (if needed)
+    let filtered = allMatchingProducts;
+
     if (color.length > 0) {
-      products = products.filter((p) =>
+      filtered = filtered.filter((p) =>
         p.colors.some((c) => color.includes(c.color.name))
       );
     }
 
     if (size.length > 0) {
-      products = products.filter((p) =>
+      filtered = filtered.filter((p) =>
         p.sizes.some((s) => size.includes(s.size.label))
       );
     }
 
-    return NextResponse.json({ count: products.length, products });
+    const totalCount = filtered.length;
+
+    // Apply pagination AFTER filtering
+    const paginatedProducts = filtered.slice(
+      (page - 1) * pageSize,
+      page * pageSize
+    );
+
+    return NextResponse.json({
+      count: totalCount,
+      products: paginatedProducts,
+    });
   } catch (error) {
     console.error("Error fetching filtered products", error);
     return NextResponse.json(

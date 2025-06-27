@@ -1,3 +1,5 @@
+"use client";
+
 import Navigation from "@/app/_components/navigation/Navigation";
 import "./Header.css";
 

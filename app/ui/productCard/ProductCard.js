@@ -30,8 +30,8 @@ export default function ProductCard({ product }) {
   };
 
   const description =
-    product.description?.length > 50
-      ? product.description.slice(0, 50) + "..."
+    product.description?.length > 76
+      ? product.description.slice(0, 76) + "..."
       : product.description;
 
   const vatAmount = (product.offerPrice * 5) / 105;

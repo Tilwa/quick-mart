@@ -1,9 +1,5 @@
 "use client";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { IoIosArrowDown } from "react-icons/io";
-import { IoIosArrowUp } from "react-icons/io";
-import { FaSortAlphaDown } from "react-icons/fa";
-import { FaSortAlphaDownAlt } from "react-icons/fa";
+
 import Header from "@/app/_components/header/Header";
 import Slider from "@/app/_components/slider/Slider";
 import "./page.css";
@@ -21,6 +17,7 @@ import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import Footer from "../_components/footer/Footer";
 
 function Page() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -61,7 +58,7 @@ function Page() {
         page,
         search: searchTerm,
         sortBy,
-        pageSize: 50,
+        pageSize: 52,
         filters: {
           brand: selectedFilters["Fabric Name"],
           color: selectedFilters["Color"],
@@ -113,10 +110,11 @@ function Page() {
   };
 
   // counting total pages
-  const totalPages = Math.ceil(productsData?.products?.count / 50);
+  const totalPages = Math.ceil(productsData?.count / 50);
 
   return (
-    <div>
+    <div className="all-products-container">
+      <Header />
       <div className="all-prod-home">
         <Slider />
 
@@ -243,9 +241,9 @@ function Page() {
 
             {/* pagination container */}
             <div className="all-products-pagination">
-              <p id="all-products-rows">
-                <p>Rows per page 50</p>
-              </p>
+              <div id="all-products-rows">
+                <p>All {productsData?.count} product(s) selected.</p>
+              </div>
 
               <div className="all-products-pages">
                 <p>
@@ -275,6 +273,7 @@ function Page() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
