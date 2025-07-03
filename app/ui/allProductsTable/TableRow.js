@@ -109,7 +109,7 @@ function TableRow({
           <div id="product-menus">
             <ul id="product-menu-list">
               <Link
-                href={`/dashboard/edit-product/${productId}`}
+                href={`/dashboard/all-products/edit-product/${productId}`}
                 id="edit-product-link"
               >
                 <li>Edit</li>

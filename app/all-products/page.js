@@ -35,12 +35,17 @@ function Page() {
   });
 
   // fetching  products brands
+  // Fetching products brands
   const { data: productsBrands } = useQuery({
     queryKey: ["products"],
     queryFn: () => getAllProducts({ pageSize: 10000 }),
   });
-  const brandOptions =
-    productsBrands?.products?.map((product) => product.brand) || [];
+
+  const brandOptions = Array.from(
+    new Set(
+      productsBrands?.products?.map((product) => product.brand).filter(Boolean)
+    )
+  );
 
   // Fetch products
   const { data: productsData, isLoading } = useQuery({

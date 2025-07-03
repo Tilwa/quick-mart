@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import Header from "@/app/_components/header/Header";
 import Footer from "@/app/_components/footer/Footer";
-import { usePlaceOrder } from "@/app/_hooks/order/usePlaceOrder";
+import { usePlaceOrder } from "@/app/_hooks/order/useAddOrder";
 import Image from "next/image";
 
 function ProductPage() {
