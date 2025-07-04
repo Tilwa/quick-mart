@@ -72,10 +72,15 @@
   margin: 4px 0;
   /* color: #387478; */
 }
-
+.title {
+  /* background-color: pink; */
+  min-height: 20px;
+}
 .description {
   font-size: 13px;
   color: #555;
+
+  min-height: 35px;
 }
 
 .price {

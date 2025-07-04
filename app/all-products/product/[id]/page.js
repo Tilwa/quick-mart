@@ -7,8 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import Header from "@/app/_components/header/Header";
 import Footer from "@/app/_components/footer/Footer";
-import { usePlaceOrder } from "@/app/_hooks/order/useAddOrder";
+
 import Image from "next/image";
+import { useAddOrder } from "@/app/_hooks/order/useAddOrder";
 
 function ProductPage() {
   const pathname = usePathname();
@@ -28,8 +29,10 @@ function ProductPage() {
 
   const fixDriveUrl = (url) => {
     if (!url) return null;
-    const match = url.match(/id=([^&]+)/);
-    return match ? `https://drive.google.com/thumbnail?id=${match[1]}` : url;
+    const match = url.match(/(?:\/d\/|id=)([-\w]+)/);
+    return match
+      ? `https://drive.google.com/uc?export=view&id=${match[1]}`
+      : null;
   };
 
   const variants = useMemo(() => {
@@ -78,7 +81,7 @@ function ProductPage() {
       variant: selectedVariant,
       productId: product.id,
       productTitle: product.title,
-      price: product.price,
+      price: product.offerPrice, // you may want to use offerPrice here
     };
 
     placeOrder(orderData, {
@@ -88,12 +91,12 @@ function ProductPage() {
       },
       onError: (err) => {
         alert("Failed to place order.");
-        console.error(err);
+        console.error("Order error:", err);
       },
     });
   };
 
-  const { mutate: placeOrder, isPending, isSuccess } = usePlaceOrder();
+  const { mutate: placeOrder, isPending, isSuccess, isError } = useAddOrder();
 
   if (isFetching) return <p>Loading...</p>;
   if (error || !product) return <p>Product not found.</p>;
@@ -109,7 +112,9 @@ function ProductPage() {
         <div className="product-left">
           <div className="image-thumbs-column">
             {variants.map((v, i) => (
-              <img
+              <Image
+                width={50}
+                height={50}
                 key={i}
                 src={v.image}
                 onClick={() => setSelectedIndex(i)}
@@ -120,7 +125,9 @@ function ProductPage() {
           </div>
 
           <div className="main-image-frame">
-            <img
+            <Image
+              width={100}
+              height={100}
               src={selectedVariant.image}
               alt="Main Variant"
               className="main-image"
@@ -150,6 +157,7 @@ function ProductPage() {
               required
               value={form.name}
               onChange={handleInput}
+              className="place-order-inputs"
             />
             <input
               type="tel"
@@ -158,6 +166,7 @@ function ProductPage() {
               required
               value={form.mobile}
               onChange={handleInput}
+              className="place-order-inputs"
             />
 
             <select
@@ -165,6 +174,7 @@ function ProductPage() {
               required
               value={form.quantity}
               onChange={handleInput}
+              className="place-order-inputs"
             >
               <option value="">-Select Quantity-</option>
               {[1, 2, 3, 4, 5].map((q) => (
@@ -177,6 +187,7 @@ function ProductPage() {
               required
               value={form.emirate}
               onChange={handleInput}
+              className="place-order-inputs"
             >
               <option value="">-Select Emirate-</option>
               {["Dubai", "Abu Dhabi", "Sharjah", "Ajman"].map((e) => (
@@ -190,6 +201,7 @@ function ProductPage() {
               required
               value={form.address}
               onChange={handleInput}
+              className="place-order-inputs"
             ></textarea>
 
             <div className="attribute-selectors">
@@ -198,6 +210,7 @@ function ProductPage() {
                 <select
                   value={selectedIndex}
                   onChange={(e) => setSelectedIndex(Number(e.target.value))}
+                  className="place-order-inputs"
                 >
                   {variants.map((v, i) => (
                     <option key={i} value={i}>
@@ -212,6 +225,7 @@ function ProductPage() {
                 <select
                   value={selectedIndex}
                   onChange={(e) => setSelectedIndex(Number(e.target.value))}
+                  className="place-order-inputs"
                 >
                   {variants.map((v, i) => (
                     <option key={i} value={i}>

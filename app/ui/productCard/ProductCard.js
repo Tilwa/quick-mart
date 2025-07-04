@@ -29,6 +29,11 @@ export default function ProductCard({ product }) {
     setCurrentImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  const title =
+    product.title?.length > 27
+      ? product.title.slice(0, 27) + "..."
+      : product.title;
+
   const description =
     product.description?.length > 76
       ? product.description.slice(0, 76) + "..."
@@ -36,9 +41,17 @@ export default function ProductCard({ product }) {
 
   const vatAmount = (product.offerPrice * 5) / 105;
 
+  const hasDiscount = product.originalPrice > product.offerPrice;
+  const discount = hasDiscount
+    ? Math.round(
+        ((product.originalPrice - product.offerPrice) / product.originalPrice) *
+          100
+      )
+    : null;
+
   return (
     <div className={`product-card ${isOutOfStock ? "out-of-stock" : ""}`}>
-      <div className="discount-badge">25% OFF</div>
+      <div className="discount-badge">{discount}% OFF</div>
 
       <div className="product-image-slider">
         {images.length > 1 && (
@@ -91,7 +104,7 @@ export default function ProductCard({ product }) {
               href={`/all-products/product/${product.id}`}
               id="product-title"
             >
-              {product.title}
+              <p className="title">{title}</p>
             </Link>
           )}
         </h3>

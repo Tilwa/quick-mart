@@ -204,13 +204,47 @@ function Page() {
                   error={errors.variantImage}
                   required={false}
                 />
-                <InputField
+                {/* <InputField
                   label="Status"
                   id="status"
                   register={register}
                   error={errors.status}
                   required={false}
-                />
+                /> */}
+
+                <div className="add-order-form-group">
+                  <label htmlFor="status">Order Status</label>
+                  <div className="input-and-error-container">
+                    <select
+                      id="status"
+                      {...register("status", {
+                        required: "Status is required ⛔",
+                      })}
+                      className="status-dropdown"
+                    >
+                      <option value="">- Select Status -</option>
+                      {[
+                        "pending",
+                        "confirmed",
+                        "processing",
+                        "shipped",
+                        "delivered",
+                        "completed",
+                        "cancelled",
+                        "returned",
+                        "failed",
+                      ].map((statusOption) => (
+                        <option key={statusOption} value={statusOption}>
+                          {statusOption.charAt(0).toUpperCase() +
+                            statusOption.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.status && (
+                      <p className="error-message">{errors.status.message}</p>
+                    )}
+                  </div>
+                </div>
               </div>{" "}
             </div>
             {/* Buttons */}{" "}

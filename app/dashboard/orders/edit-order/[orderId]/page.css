@@ -331,3 +331,21 @@
   /* background-color: pink; */
   display: flex;
 }
+
+.add-order-form-group select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  color: #629584;
+  border: 1px solid #e2f1e7;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth effect */
+  margin-bottom: 16px;
+  width: 65%;
+}
+
+/* On focus, change border and shadow color */
+.add-order-form-group select:focus {
+  border-color: #e2f1e7; /* Custom border color on focus */
+  box-shadow: 0 0 5px #e2f1e7; /* Optional shadow effect */
+  outline: none; /* Remove default outline */
+}

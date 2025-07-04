@@ -1,41 +1,56 @@
 .home {
   margin: auto 70px;
+  padding: 20px 0;
 }
-.recommended {
+
+.row-title {
   margin-bottom: 20px;
+  font-size: 1.5rem;
 }
 
+.product-row {
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.scroll-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Product Card Scrollable Grid */
 .grid-container {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 4 columns */
-  /* grid-template-rows: repeat(4, auto);  */
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
   gap: 20px;
+  padding: 20px 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  background-color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.grid-container::-webkit-scrollbar {
+  display: none;
 }
 
+/* Individual Product Card */
 .grid-item {
-  background-color: white;
-
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+  flex: 0 0 auto;
+  /* width: 220px; */
+  /* margin-right: 20px; */
+  position: relative;
+  /* background-color: pink; */
+  display: flex;
 }
 
 .product-card {
   display: flex;
   flex-direction: column;
-}
-
-.product-img {
-  width: 100%;
-  height: 100%;
-  background-color: red;
-  border-radius: 5px;
-}
-
-.product-details {
-  background-color: aqua;
-}
-
-.product-card {
   width: 260px;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -43,42 +58,17 @@
   font-family: Arial, sans-serif;
   position: relative;
   background: #fff;
-  display: flex;
-  flex-direction: column;
   padding-bottom: 10px;
-}
-
-.discount-badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background-color: #f44336;
-  color: white;
-  padding: 4px 8px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 4px;
-  z-index: 1;
 }
 
 .product-img {
   width: 100%;
   height: 200px;
   object-fit: cover;
+  border-radius: 5px;
 }
 
-.brand-logo {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: black;
-  color: white;
-  padding: 4px 6px;
-  font-size: 10px;
-  border-radius: 3px;
-  font-weight: bold;
-}
-
+/* Info */
 .product-info {
   padding: 12px;
   display: flex;
@@ -100,21 +90,78 @@
   font-size: 12px;
   color: #888;
 }
-
 .title {
   font-size: 16px;
   font-weight: 600;
   color: #333;
   margin: 4px 0;
 }
-
 .price {
   font-size: 18px;
   color: #000;
   font-weight: bold;
 }
-
 .vat {
   font-size: 12px;
   color: #666;
+}
+
+/* Badges */
+.discount-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: #f44336;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  z-index: 1;
+}
+.brand-logo {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: black;
+  color: white;
+  padding: 4px 6px;
+  font-size: 10px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+/* Arrows */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 5px 10px;
+  z-index: 20;
+}
+
+.arrow.left {
+  left: 0;
+}
+
+.arrow.right {
+  right: 0;
+}
+
+/* Show More Button */
+.show-more-wrapper {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.show-more-btn {
+  padding: 10px 20px;
+  background-color: #387478;
+  color: #e2f1e7;
+  border: none;
+  cursor: pointer;
 }

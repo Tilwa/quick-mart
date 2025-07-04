@@ -169,3 +169,16 @@ button[type="submit"] {
   display: flex;
   flex-direction: column;
 }
+.place-order-inputs {
+  outline: none;
+  color: #629584;
+  border: 1px solid #d7e4dc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth effect */
+}
+
+/* On focus, change border and shadow color */
+.place-order-inputs select:focus {
+  border-color: #e2f1e7; /* Custom border color on focus */
+  box-shadow: 0 0 5px #e2f1e7; /* Optional shadow effect */
+  outline: none; /* Remove default outline */
+}
