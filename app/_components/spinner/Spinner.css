@@ -7,9 +7,9 @@
   align-items: center;
   justify-content: center;
 
-  margin: 15rem auto;
+  /* margin: 5rem auto; */
   width: 4rem;
-  height: 4rem; /* Maintains a square aspect ratio */
+  height: 4rem;
 
   border-radius: 50%;
   background: radial-gradient(

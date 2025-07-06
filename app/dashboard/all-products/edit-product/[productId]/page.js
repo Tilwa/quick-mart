@@ -230,24 +230,23 @@ function Page() {
                   requiredMessage="Category is required ⛔"
                 />
                 <InputField
+                  type="number"
+                  step="0.01"
                   label="Offer Price *"
                   id="offerPrice"
-                  type="number"
                   register={register}
                   error={errors.offerPrice}
                   requiredMessage="Offer price is required ⛔"
-                  step="0.01" // Accept decimals
-                  inputMode="decimal" // Mobile keyboards
                 />
+
                 <InputField
+                  type="number"
+                  step="0.01"
                   label="Original Price *"
                   id="originalPrice"
-                  type="number"
                   register={register}
                   error={errors.originalPrice}
                   requiredMessage="Original price is required ⛔"
-                  step="0.01" // Accept decimals
-                  inputMode="decimal" // Mobile keyboards
                 />
               </div>
               {/* Right Fields */}
@@ -483,6 +482,7 @@ function InputField({
   error,
   required = true,
   requiredMessage,
+  ...rest // ✅ captures any extra props like step, min, max etc.
 }) {
   return (
     <div className="add-product-form-group">
@@ -493,6 +493,7 @@ function InputField({
           id={id}
           placeholder={`Enter your ${id}`}
           {...register(id, required ? { required: requiredMessage } : {})}
+          {...rest} // ✅ apply the rest props here, like step="0.01"
         />
         {error && <p className="error-message">{error.message}</p>}
       </div>

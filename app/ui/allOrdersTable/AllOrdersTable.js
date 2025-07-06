@@ -8,7 +8,7 @@ import TableRow from "./TableRow";
 import { useState } from "react";
 
 function AllOrdersTable({
-  isLoading,
+  isPending,
   orders,
   deleteTenRows,
   setDeleteTenRows,
@@ -54,19 +54,25 @@ function AllOrdersTable({
           </tr>
         </thead>
         <tbody>
-          {orders?.orders?.length === 0 ? (
+          {isPending ? (
+            <tr>
+              <td colSpan="15">
+                <SpinnerMini height={11.4} />
+              </td>
+            </tr>
+          ) : orders?.orders?.length === 0 ? (
             <tr id="no-result-found-row">
               <td id="no-result-found-txt" colSpan="15">
                 No results found.
               </td>
             </tr>
           ) : (
-            orders?.orders?.map((order) => (
+            orders.orders.map((order) => (
               <TableRow
-                activeOrderId={activeOrderId}
-                setActiveOrderId={setActiveOrderId}
                 key={order.id}
                 order={order}
+                activeOrderId={activeOrderId}
+                setActiveOrderId={setActiveOrderId}
                 isSelected={selectedRows.includes(order.id)}
                 onSelect={() => {
                   if (selectedRows.includes(order.id)) {

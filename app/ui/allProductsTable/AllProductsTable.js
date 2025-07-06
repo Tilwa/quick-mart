@@ -6,9 +6,10 @@ import { getAllProducts } from "@/app/_hooks/product/useGetAllProducts";
 import SpinnerMini from "@/app/_components/spinnerMini/SpinnerMini";
 import TableRow from "./TableRow";
 import { useState } from "react";
+import Spinner from "@/app/_components/spinner/Spinner";
 
 function AllProductsTable({
-  isLoading,
+  isPending,
   products,
   deleteTenRows,
   setDeleteTenRows,
@@ -25,6 +26,8 @@ function AllProductsTable({
       setSelectedRows(products.products.map((p) => p.id));
     }
   };
+
+  // if (isPending) return <Spinner />;
   return (
     <div className="all-products-table">
       <table className="all-products-table-main">
@@ -54,19 +57,25 @@ function AllProductsTable({
           </tr>
         </thead>
         <tbody>
-          {products?.products?.length === 0 ? (
+          {isPending ? (
+            <tr>
+              <td colSpan="15">
+                <SpinnerMini height={11.4} />
+              </td>
+            </tr>
+          ) : products?.products?.length === 0 ? (
             <tr id="no-result-found-row">
               <td id="no-result-found-txt" colSpan="15">
                 No results found.
               </td>
             </tr>
           ) : (
-            products?.products?.map((product) => (
+            products.products.map((product) => (
               <TableRow
-                activeProductId={activeProductId}
-                setActiveProductId={setActiveProductId}
                 key={product.id}
                 product={product}
+                activeProductId={activeProductId}
+                setActiveProductId={setActiveProductId}
                 isSelected={selectedRows.includes(product.id)}
                 onSelect={() => {
                   if (selectedRows.includes(product.id)) {

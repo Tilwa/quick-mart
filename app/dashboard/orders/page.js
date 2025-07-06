@@ -32,7 +32,7 @@ function Page() {
 
   // fetching all orders initially
   const {
-    isLoading,
+    isPending: fetchingOrders,
     data: orders,
     error,
   } = useQuery({
@@ -171,7 +171,7 @@ function Page() {
         </div>
         <div className="all-orders-middle">
           <AllOrdersTable
-            isLoading={isLoading}
+            isPending={fetchingOrders}
             orders={orders}
             deleteTenRows={deleteTenRows}
             setDeleteTenRows={setDeleteTenRows}

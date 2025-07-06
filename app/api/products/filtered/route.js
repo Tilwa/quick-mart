@@ -13,6 +13,7 @@ export async function GET(req) {
     const brand = searchParams.getAll("brand");
     const color = searchParams.getAll("color");
     const size = searchParams.getAll("size");
+    const title = searchParams.getAll("title");
     const availability = searchParams.get("availability");
     const minPrice = parseFloat(searchParams.get("minPrice") || "0");
     const maxPrice = parseFloat(searchParams.get("maxPrice") || "0");

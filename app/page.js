@@ -1,16 +1,21 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Footer from "./_components/footer/Footer";
 import Header from "./_components/header/Header";
 import Slider from "./_components/slider/Slider";
-import "./page.css";
 import Link from "next/link";
-import { getFilteredProducts } from "./_hooks/product/useGetFilteredProducts";
 import Image from "next/image";
+import { getFilteredProducts } from "./_hooks/product/useGetFilteredProducts";
 
-// Reusable horizontal product slider row
+import "./page.css";
+import SuspenseWrapper from "./_components/suspenseWrapper/SuspenseWrapper";
+import { isPending } from "@reduxjs/toolkit";
+import SpinnerMini from "./_components/SpinnerMini";
+import Spinner from "./_components/spinner/Spinner";
+
+// Product Row Component
 function ProductRow({ title, products }) {
   const containerRef = useRef(null);
   const [showMore, setShowMore] = useState(false);
@@ -78,7 +83,13 @@ function ProductRow({ title, products }) {
                     <p className="category">{p.category}</p>
                     <h3 className="title">{shortTitle}</h3>
                     <p className="vat">{shortDescription}</p>
-                    <p className="price">{p.offerPrice} AED</p>
+                    <p className="price">
+                      {" "}
+                      {p.offerPrice} AED{" "}
+                      <span className="original-price">
+                        {p.originalPrice} AED
+                      </span>
+                    </p>
                     <p className="vat">{vatAmount} AED - VAT Included</p>
                   </div>
                 </div>
@@ -103,6 +114,7 @@ function ProductRow({ title, products }) {
   );
 }
 
+// HomePage
 function HomePage() {
   const [selectedFilters] = useState({
     "Fabric Name": [],
@@ -111,50 +123,84 @@ function HomePage() {
     Availability: [],
   });
 
-  const sharedQueryParams = {
-    page: 1,
-    pageSize: 10,
-    search: "",
-    sortBy: "createdAt_desc",
-    filters: {
-      brand: selectedFilters["Fabric Name"],
-      color: selectedFilters["Color"],
-      size: selectedFilters["Size"],
-    },
-  };
+  const baseFilters = useMemo(
+    () => ({
+      page: 1,
+      pageSize: 10,
+      search: "",
+      filters: {
+        brand: selectedFilters["Fabric Name"],
+        color: selectedFilters["Color"],
+        size: selectedFilters["Size"],
+      },
+    }),
+    [selectedFilters]
+  );
 
-  const { data: featuredData = [] } = useQuery({
-    queryKey: ["featured-products"],
-    queryFn: () => getFilteredProducts(sharedQueryParams),
+  const featuredQuery = useMemo(
+    () => ({ ...baseFilters, sortBy: "featured" }),
+    [baseFilters]
+  );
+  const newArrivalsQuery = useMemo(
+    () => ({ ...baseFilters, sortBy: "createdAt_desc" }),
+    [baseFilters]
+  );
+  const trendingQuery = useMemo(
+    () => ({ ...baseFilters, sortBy: "popularity" }),
+    [baseFilters]
+  );
+  const exclusiveQuery = useMemo(
+    () => ({ ...baseFilters, sortBy: "random" }),
+    [baseFilters]
+  );
+
+  const { data: featuredData = [], isPending: featuredDataLoading } = useQuery({
+    queryKey: ["featured-products", featuredQuery],
+    queryFn: () => getFilteredProducts(featuredQuery),
   });
 
-  const { data: newArrivalsData = [] } = useQuery({
-    queryKey: ["new-arrivals"],
-    queryFn: () =>
-      getFilteredProducts({ ...sharedQueryParams, sortBy: "createdAt_desc" }),
+  const { data: newArrivalsData = [], isPending: newArrivalsDataLoading } =
+    useQuery({
+      queryKey: ["new-arrivals", newArrivalsQuery],
+      queryFn: () => getFilteredProducts(newArrivalsQuery),
+    });
+
+  const { data: trendingData = [], isPending: trendingDataLoading } = useQuery({
+    queryKey: ["trending-products", trendingQuery],
+    queryFn: () => getFilteredProducts(trendingQuery),
   });
 
-  const { data: trendingData = [] } = useQuery({
-    queryKey: ["trending-products"],
-    queryFn: () =>
-      getFilteredProducts({ ...sharedQueryParams, sortBy: "popularity" }),
-  });
+  const { data: exclusiveData = [], isPending: exclusiveDataLoading } =
+    useQuery({
+      queryKey: ["exclusive-products", exclusiveQuery],
+      queryFn: () => getFilteredProducts(exclusiveQuery),
+    });
 
-  const { data: exclusiveData = [] } = useQuery({
-    queryKey: ["exclusive-products"],
-    queryFn: () =>
-      getFilteredProducts({ ...sharedQueryParams, sortBy: "random" }),
-  });
-
+  // if (
+  //   featuredDataLoading ||
+  //   newArrivalsDataLoading ||
+  //   trendingDataLoading ||
+  //   exclusiveDataLoading
+  // )
+  //   return <Spinner />;
   return (
     <div>
       <Header />
       <div className="home">
         <Slider />
-        <ProductRow title="Featured Products" products={featuredData} />
-        <ProductRow title="New Arrivals" products={newArrivalsData} />
-        <ProductRow title="Trending Now" products={trendingData} />
-        <ProductRow title="Exclusive Picks" products={exclusiveData} />
+        {featuredDataLoading ||
+        newArrivalsDataLoading ||
+        trendingDataLoading ||
+        exclusiveDataLoading ? (
+          <Spinner height={5} />
+        ) : (
+          <>
+            <ProductRow title="Featured Products" products={featuredData} />
+            <ProductRow title="New Arrivals" products={newArrivalsData} />
+            <ProductRow title="Trending Now" products={trendingData} />
+            <ProductRow title="Exclusive Picks" products={exclusiveData} />
+          </>
+        )}
       </div>
       <Footer />
     </div>

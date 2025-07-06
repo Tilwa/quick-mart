@@ -8,7 +8,7 @@ import TableRow from "./TableRow";
 import { useState } from "react";
 
 function AllColorsTable({
-  isLoading,
+  isPending,
   colors,
   deleteTenRows,
   setDeleteTenRows,
@@ -46,19 +46,25 @@ function AllColorsTable({
           </tr>
         </thead>
         <tbody>
-          {colors?.colors?.length === 0 ? (
+          {isPending ? (
+            <tr>
+              <td colSpan="15">
+                <SpinnerMini height={12} />
+              </td>
+            </tr>
+          ) : colors?.colors?.length === 0 ? (
             <tr id="no-result-found-row">
               <td id="no-result-found-txt" colSpan="15">
                 No results found.
               </td>
             </tr>
           ) : (
-            colors?.colors?.map((color) => (
+            colors.colors.map((color) => (
               <TableRow
-                activeColorId={activeColorId}
-                setActiveColorId={setActiveColorId}
                 key={color.id}
                 color={color}
+                activeColorId={activeColorId}
+                setActiveColorId={setActiveColorId}
                 isSelected={selectedRows.includes(color.id)}
                 onSelect={() => {
                   if (selectedRows.includes(color.id)) {

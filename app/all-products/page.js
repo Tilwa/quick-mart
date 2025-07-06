@@ -18,9 +18,13 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import Footer from "../_components/footer/Footer";
+import { useSearchParams } from "next/navigation";
+import Spinner from "../_components/spinner/Spinner";
 
 function Page() {
+  const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
+
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState("");
   const [minPrice, setMinPrice] = useState("");
@@ -68,6 +72,7 @@ function Page() {
           brand: selectedFilters["Fabric Name"],
           color: selectedFilters["Color"],
           size: selectedFilters["Size"],
+          title: selectedFilters["Title"],
         },
         minPrice: minPrice ? Number(minPrice) : undefined,
         maxPrice: maxPrice ? Number(maxPrice) : undefined,
@@ -114,8 +119,21 @@ function Page() {
     });
   };
 
+  useEffect(() => {
+    const currentSearch = searchParams.get("search") || "";
+    setSearchTerm(currentSearch);
+    setSelectedFilters({
+      "Fabric Name": [],
+      Color: [],
+      Size: [],
+      Availability: [],
+    });
+    setPage(1); // reset to page 1 on new search
+  }, [searchParams]);
+
   // counting total pages
-  const totalPages = Math.ceil(productsData?.count / 50);
+  const pageSize = 52;
+  const totalPages = Math.ceil(productsData?.count / pageSize);
 
   return (
     <div className="all-products-container">
@@ -124,7 +142,10 @@ function Page() {
         <Slider />
 
         <div className="all-prod-title-filters">
-          <h2 className="all-prod-title">All Products</h2>
+          <h2 className="all-prod-title">
+            {" "}
+            {searchTerm ? `Results for "${searchTerm}"` : "All Products"}
+          </h2>
           <div className="title-sort-container">
             <p>Sort By:</p>
             <select
@@ -235,7 +256,9 @@ function Page() {
 
           <div className="product-list">
             {isLoading ? (
-              <p>Loading...</p>
+              <div id="spinner-div">
+                <Spinner height={4} />
+              </div>
             ) : productsData?.products?.length > 0 ? (
               productsData?.products?.map((product) => (
                 <ProductCard key={product.id} product={product} />

@@ -31,7 +31,7 @@ function Page() {
 
   // fetching all products initially
   const {
-    isLoading,
+    isPending: fetchingProducts,
     data: products,
     error,
   } = useQuery({
@@ -89,8 +89,6 @@ function Page() {
       toast.error(`❌ ${err.message || "Something went wrong"}`);
     }
   }
-
-  // if (isLoading) return <Spinner />;
 
   return (
     <div className="all-products-container">
@@ -167,7 +165,7 @@ function Page() {
         </div>
         <div className="all-products-middle">
           <AllProductsTable
-            isLoading={isLoading}
+            isPending={fetchingProducts}
             products={products}
             deleteTenRows={deleteTenRows}
             setDeleteTenRows={setDeleteTenRows}

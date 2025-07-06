@@ -1,0 +1,105 @@
+.admin-dashboard-container {
+  height: 100%;
+  margin: auto 20px;
+  padding: 20px 0;
+}
+
+.dashboard-card {
+  background-color: white;
+  min-height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.dashboard-path {
+  /* background-color: rgb(27, 15, 75); */
+  align-items: center;
+  font-weight: bold;
+  font-size: small;
+  color: #387478;
+}
+
+.top-4-containers {
+  /* background-color: pink; */
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.top-containers-1 {
+  background-color: white;
+  display: flex;
+  flex: 1;
+  height: 130px;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(231, 231, 231);
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: 15px;
+}
+.box-title {
+  font-size: medium;
+  font-weight: bold;
+  color: white;
+}
+.box-count {
+  font-size: 3rem;
+  color: white;
+}
+.count-with-icon {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 15px;
+  align-items: center;
+}
+.order-icon {
+  fill: rgba(255, 255, 255, 0.597);
+  font-size: 4rem;
+}
+
+.top-containers-2 {
+  background-color: white;
+  display: flex;
+  flex: 1;
+  height: 130px;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(231, 231, 231);
+  background: linear-gradient(to right, #ff9a9e, #fad0c4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: 15px;
+}
+.top-containers-3 {
+  background-color: white;
+  display: flex;
+  flex: 1;
+  height: 130px;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(231, 231, 231);
+  background: linear-gradient(to right, #a18cd1, #fbc2eb);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: 15px;
+}
+.top-containers-4 {
+  background-color: white;
+  display: flex;
+  flex: 1;
+  height: 130px;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(231, 231, 231);
+  background: linear-gradient(to right, #2193b0, #6dd5ed);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-left: 15px;
+}

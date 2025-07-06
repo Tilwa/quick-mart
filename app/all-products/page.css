@@ -342,3 +342,7 @@
 .all-products-container::-webkit-scrollbar-thumb:hover {
   background: #629584;
 }
+
+#spinner-div {
+  width: 100%;
+}

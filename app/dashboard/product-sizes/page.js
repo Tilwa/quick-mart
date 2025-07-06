@@ -41,7 +41,7 @@ function Page() {
   // fetching all sizes initially
 
   const {
-    isLoading,
+    isPending: fetchingSizes,
     data: sizes,
     error,
   } = useQuery({
@@ -203,7 +203,7 @@ function Page() {
         </div>
         <div className="all-sizes-middle">
           <AllSizesTable
-            isLoading={isLoading}
+            isPending={fetchingSizes}
             sizes={sizes}
             deleteTenRows={deleteTenRows}
             setDeleteTenRows={setDeleteTenRows}

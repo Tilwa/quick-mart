@@ -9,19 +9,25 @@
   margin: auto 70px;
   padding: 15px 0;
 }
-.quick-title {
+.logo-main {
+  text-decoration: none;
+  background-color: pink;
+}
+.logo-quick-title {
   border: 1px solid #b7b7b7;
   padding: 7px 7px;
   background-color: #387478;
   color: #e2f1e7;
   font-weight: bold;
+  text-decoration: none;
 }
-.mart-title {
+.logo-mart-title {
   border: 1px solid #b7b7b7;
   padding: 5px 5px;
   background-color: #e2f1e7;
   color: #387478;
   font-weight: bold;
+  text-decoration: none;
 }
 
 #header-line {
@@ -66,4 +72,37 @@
 }
 #search-btn:hover {
   background-color: #387478;
+}
+
+/* addition css code */
+.search-bar-container {
+  position: relative;
+  width: 100%;
+}
+
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 20px;
+  right: 95px;
+  max-height: 200px; /* roughly 5 rows */
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.suggestion-item {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+.suggestion-item:hover {
+  background-color: #f2f2f2;
+  color: #387478;
 }

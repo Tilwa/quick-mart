@@ -18,6 +18,7 @@ export async function getFilteredProducts({
   filters.brand?.forEach((b) => params.append("brand", b));
   filters.color?.forEach((c) => params.append("color", c));
   filters.size?.forEach((s) => params.append("size", s));
+  filters.title?.forEach((t) => params.append("title", t));
 
   if (availability) params.append("availability", availability);
   if (minPrice) params.append("minPrice", minPrice);

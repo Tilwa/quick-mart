@@ -34,7 +34,7 @@ export default function AddProduct() {
 
   // fetching all colors
   const {
-    isLoading: isFetchingColors,
+    isPending: isFetchingColors,
     data: colorData,
     error: errorColor,
   } = useQuery({
@@ -44,7 +44,7 @@ export default function AddProduct() {
 
   // fetching all sizes
   const {
-    isLoading: isFetchingSize,
+    isPending: isFetchingSize,
     data: sizeData,
     error: errorSize,
   } = useQuery({
@@ -64,7 +64,7 @@ export default function AddProduct() {
   const queryClient = useQueryClient();
   const {
     mutate,
-    isLoading: isCreating,
+    isPending: isCreating,
     isSuccess,
     isError,
   } = useMutation({
@@ -124,7 +124,7 @@ export default function AddProduct() {
     }
   }, [showSizeDropdown, hasFetchedSizes, queryClient]);
 
-  if (isCreating) return <SpinnerMini />;
+  if (isFetchingColors || isFetchingSize) return <Spinner height={15} />;
   return (
     <div className="edit-product-container">
       <div className="edit-product-card">
@@ -172,21 +172,19 @@ export default function AddProduct() {
                   label="Offer Price *"
                   id="offerPrice"
                   type="number"
+                  step="0.01"
                   register={register}
                   error={errors.offerPrice}
                   requiredMessage="Offer price is required ⛔"
-                  step="0.01" // Accept decimals
-                  inputMode="decimal" // Mobile keyboards
                 />
                 <InputField
                   label="Original Price *"
                   id="originalPrice"
                   type="number"
+                  step="0.01"
                   register={register}
                   error={errors.originalPrice}
                   requiredMessage="Original price is required ⛔"
-                  step="0.01" // Accept decimals
-                  inputMode="decimal" // Mobile keyboards
                 />
               </div>
 
@@ -427,6 +425,7 @@ function InputField({
   error,
   required = true,
   requiredMessage,
+  ...rest // ✅ captures any extra props like step, min, max etc.
 }) {
   return (
     <div className="add-product-form-group">
@@ -437,6 +436,7 @@ function InputField({
           id={id}
           placeholder={`Enter your ${id}`}
           {...register(id, required ? { required: requiredMessage } : {})}
+          {...rest} // ✅ apply the rest props here, like step="0.01"
         />
         {error && <p className="error-message">{error.message}</p>}
       </div>

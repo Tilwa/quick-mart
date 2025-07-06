@@ -1,8 +1,7 @@
 .footer {
   background-color: #212832;
   color: white;
-  padding: 40px 20px 20px;
-  font-family: Arial, sans-serif;
+  padding: 40px 0px;
 }
 
 .footer-top {
@@ -12,6 +11,8 @@
   gap: 30px;
   border-bottom: 1px solid #444;
   padding-bottom: 30px;
+  margin: auto 70px;
+  /* background-color: pink; */
 }
 
 .footer-section {

@@ -42,7 +42,7 @@ function Page() {
   // fetching all colors initially
 
   const {
-    isLoading,
+    isPending: fetchingColors,
     data: colors,
     error,
   } = useQuery({
@@ -124,8 +124,6 @@ function Page() {
   });
 
   const onSubmit = (data) => mutate(data);
-
-  // if (isLoading) return <Spinner />;
 
   return (
     <div className="all-colors-container">
@@ -210,7 +208,7 @@ function Page() {
         </div>
         <div className="all-colors-middle">
           <AllColorsTable
-            isLoading={isLoading}
+            isPending={fetchingColors}
             colors={colors}
             deleteTenRows={deleteTenRows}
             setDeleteTenRows={setDeleteTenRows}

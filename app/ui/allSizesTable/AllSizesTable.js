@@ -8,7 +8,7 @@ import TableRow from "./TableRow";
 import { useState } from "react";
 
 function AllSizesTable({
-  isLoading,
+  isPending,
   sizes,
   deleteTenRows,
   setDeleteTenRows,
@@ -44,19 +44,25 @@ function AllSizesTable({
           </tr>
         </thead>
         <tbody>
-          {sizes?.sizes?.length === 0 ? (
+          {isPending ? (
+            <tr>
+              <td colSpan="15">
+                <SpinnerMini height={11.4} />
+              </td>
+            </tr>
+          ) : sizes?.sizes?.length === 0 ? (
             <tr id="no-result-found-row">
               <td id="no-result-found-txt" colSpan="15">
                 No results found.
               </td>
             </tr>
           ) : (
-            sizes?.sizes?.map((size) => (
+            sizes.sizes.map((size) => (
               <TableRow
-                activeSizeId={activeSizeId}
-                setActiveSizeId={setActiveSizeId}
                 key={size.id}
                 size={size}
+                activeSizeId={activeSizeId}
+                setActiveSizeId={setActiveSizeId}
                 isSelected={selectedRows.includes(size.id)}
                 onSelect={() => {
                   if (selectedRows.includes(size.id)) {
