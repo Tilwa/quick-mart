@@ -28,13 +28,13 @@ export default function Footer() {
           <h4>Information</h4>
           <ul>
             <li>
-              <a href="#">About us</a>
+              <a href="/policy">Policy</a>
             </li>
             <li>
-              <a href="#">Un-Claimable Products</a>
+              <a href="/about-us">About us</a>
             </li>
             <li>
-              <a href="#">Why Us?</a>
+              <a href="/contact-us">Contact us</a>
             </li>
           </ul>
         </div>

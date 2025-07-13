@@ -63,36 +63,37 @@ function ProductRow({ title, products }) {
 
             return (
               <div className="grid-item" key={i}>
-                <div className="product-card">
-                  {hasDiscount && (
-                    <div className="discount-badge">{discount}% OFF</div>
-                  )}
+                <Link href={`/all-products/product/${p.id}`} id="product-link">
+                  <div className="product-card" style={{ cursor: "pointer" }}>
+                    {hasDiscount && (
+                      <div className="discount-badge">{discount}% OFF</div>
+                    )}
 
-                  <Image
-                    width={100}
-                    height={100}
-                    src={p.image1}
-                    alt={p.title}
-                    className="product-img"
-                  />
+                    <Image
+                      width={100}
+                      height={100}
+                      src={p.image1}
+                      alt={p.title}
+                      className="product-img"
+                    />
 
-                  <div className="brand-logo">{p.brand}</div>
+                    <div className="brand-logo">{p.brand}</div>
 
-                  <div className="product-info">
-                    <span className="delivery-badge">Free Shipping</span>
-                    <p className="category">{p.category}</p>
-                    <h3 className="title">{shortTitle}</h3>
-                    <p className="vat">{shortDescription}</p>
-                    <p className="price">
-                      {" "}
-                      {p.offerPrice} AED{" "}
-                      <span className="original-price">
-                        {p.originalPrice} AED
-                      </span>
-                    </p>
-                    <p className="vat">{vatAmount} AED - VAT Included</p>
+                    <div className="product-info">
+                      <span className="delivery-badge">Free Shipping</span>
+                      <p className="category">{p.category}</p>
+                      <h3 className="title">{shortTitle}</h3>
+                      <p className="vat">{shortDescription}</p>
+                      <p className="price">
+                        {p.offerPrice} AED{" "}
+                        <span className="original-price">
+                          {p.originalPrice} AED
+                        </span>
+                      </p>
+                      <p className="vat">{vatAmount} AED - VAT Included</p>
+                    </div>
                   </div>
-                </div>
+                </Link>
               </div>
             );
           })}

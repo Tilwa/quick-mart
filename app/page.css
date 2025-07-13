@@ -165,3 +165,14 @@
   border: none;
   cursor: pointer;
 }
+
+.original-price {
+  font-size: 14px;
+  color: #f44336;
+  text-decoration: line-through;
+  margin-left: 6px;
+}
+#product-link {
+  text-decoration: none;
+  color: inherit;
+}

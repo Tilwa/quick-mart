@@ -88,3 +88,12 @@ model Order {
   createdAt    DateTime @default(now())
   status       String   @default("pending") // ✅ New status field
 }
+
+model Analytics {
+  id        String   @id @default(uuid())
+  sessionId String
+  country   String
+  page      String
+  timestamp DateTime @default(now())
+  bounce    Boolean
+}

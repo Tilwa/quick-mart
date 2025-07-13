@@ -1,4 +1,6 @@
 "use client";
+import React, { useEffect, useState } from "react";
+
 import { usePathname } from "next/navigation";
 import { GiCardboardBox } from "react-icons/gi";
 import { MdShoppingCart } from "react-icons/md";
@@ -6,11 +8,30 @@ import { HiUser } from "react-icons/hi2";
 import { BiSolidMessageRoundedEdit } from "react-icons/bi";
 
 import "./page.css";
+import SummaryCards from "../_components/googleAnalytics/summaryCards/SummaryCards";
+import LineChart from "../_components/googleAnalytics/lineChart/LineChart";
+import WorldMap from "../_components/googleAnalytics/worldMap/WorldMap";
 
 function Page() {
   // Get the current pathname
   const pathname = usePathname();
   const formattedPath = pathname.slice(1).split("/").join(" > ");
+  // const { data: session, status } = useSession();
+  // const [data, setData] = useState(null);
+
+  // useEffect(() => {
+  //   if (status === "authenticated") {
+  //     fetch("/api/analytics")
+  //       .then((res) => res.json())
+  //       .then(setData);
+  //   }
+  // }, [status]);
+
+  // if (status === "loading") return <p>Loading session...</p>;
+  // if (status === "unauthenticated") {
+  //   signIn(); // Redirect to login page
+  //   return null;
+  // }
   return (
     <div className="admin-dashboard-container">
       <div className="dashboard-card">
@@ -50,6 +71,20 @@ function Page() {
             </div>
           </div>
         </div>
+
+        {/* top-4-containers ends here */}
+        {/* <div className="dashboard-container">
+          <h1>Site Analytics</h1>
+          {!data ? (
+            <p>Loading analytics...</p>
+          ) : (
+            <>
+              <SummaryCards stats={data} />
+              <LineChart hourlyStats={data.hourlyStats} />
+              <WorldMap countryStats={data.countryStats} />
+            </>
+          )}
+        </div> */}
       </div>
     </div>
   );

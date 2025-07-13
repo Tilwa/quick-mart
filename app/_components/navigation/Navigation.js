@@ -17,7 +17,13 @@ export default function Navigation() {
           <Link href="/all-products">All Products</Link>
         </li>
         <li>
-          <Link href="/deals">Deals</Link>
+          <Link href="/policy">Policy</Link>
+        </li>
+        <li>
+          <Link href="/about-us">About Us</Link>
+        </li>
+        <li>
+          <Link href="/contact-us">Contact Us</Link>
         </li>
       </ul>
     </nav>
